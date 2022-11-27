@@ -1,10 +1,39 @@
 version: "3.7"
 
 services:
-  web:
-    build: 
-RUN apk add --no-cache gcc musl-dev linux-headers
-COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
+  web-apache:
+    build: https://raw.githubusercontent.com/aquilesrodrigues/Docker/main/dockerfile/dockerfile_debian-apache
+      dockerfile: debian-apache
+      args:
+        versao: 1
+    container_name: web-apache_compose
+    restart: always
+    networks:
+      - network-cyberfazer
+    ports:
+      - "80:80"
+    RUN:
+    entrypoint: ["bash", "-c",
+     "chmod +x /scripts/rs-init.sh && sh /scripts/rs-init.sh"]
+    environment:
+    volumes:
 
-RUN wget -c https://github.com/aquilesrodrigues/javascript-memory-game.git -O game-of-memory.tar
+    command: 
+    tar -czf game-of-memory.tar ./
+    RUN apk add --no-cache gcc musl-dev linux-headers
+    COPY requirements.txt requirements.txt
+    RUN pip install -r requirements.txt
+    RUN wget -c https://github.com/aquilesrodrigues/javascript-memory-game.git -O game-of-memory.tar
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+# ==============================================================
+# --------------------------------------------------------------
+
+networks:
+  network-cyberfazer:
+    driver: bridge
+    ipam:
+      driver: default
+# ==============================================================
+# **************************************************************
+

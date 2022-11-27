@@ -1,0 +1,33 @@
+#  ===================================================
+# Docker-compose organizado por AQUILES RODRIGUES
+# Caso use o phpmyadmin utilizar -e PMA_HOST=mariadb
+# ----------------------------------------------------
+version: "3.7"
+services:
+  mariadb:
+    image: mariadb:10.0
+    container_name: mariadb_compose
+    restart: always
+    networks:
+      - network-cyberfazer
+    ports:
+      - "3306:3306"
+    volumes:
+      - "/var/docker/mariadb/bancos:/var/lib/mysql"
+      - "/var/docker/mariadb/conf.d:/etc/mysql/conf.d"
+      - "/etc/localtime:/etc/localtime:ro"
+    env_file:
+      - conexao.env
+
+# @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+# ==============================================================
+# --------------------------------------------------------------
+
+networks:
+  rede-click:
+    driver: bridge
+    ipam:
+      driver: default
+# ==============================================================
+# **************************************************************
+

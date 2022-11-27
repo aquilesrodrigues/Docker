@@ -1,2 +1,13 @@
 FROM debian
-RUN apt-get udate && apt-get install 
+RUN apt-get update \
+    && apt-get install -y zip unrar tar apache2 \
+    && apt-get clean
+ENV APACHE LOCK DIR= “var/lock”
+#. O arquivo que contém o número de identificação do processo
+ENV APACHE PID FILE=”var/run/apache2.pid”
+#. usuário que irá executar o apache
+ENV APACHE_RUN_USER=”www-data“
+#. Grupo do usuário
+ENV APACHE_RUN_GROUP=”www-data“
+#. Arquivo de log
+ENV APACHE_LOG_DIR=”/var/log/apache2”

@@ -41,27 +41,27 @@ ENV APACHE_WORKER_MAX_REQUEST_WORKERS       4
 ENV APACHE_WORKER_MAX_CONNECTIONS_PER_CHILD 0
 
 # Configurar timezone Brasil
-ENV TIMEZONE America/Sao_Paulo
+ENV TZ "America/Sao_Paulo" 
 ENV DEBIAN_FRONTEND noninteractive
-ENV LANGUAGE pt_BR.UTF-8
-ENV LANG pt_BR.UTF-8
-ENV LC_ALL pt_BR.UTF-8
+ENV LANGUAGE en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LC_ALL en_US.UTF-8
 
 
 # atualizar d pacotes
 RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y wget curl locales apache2 tzdata unzip zip && \
+    apt-get install -y wget curl locales apache2 tzdata unzip zip net-tools && \
     apt-get clean
 
 
-RUN locale-gen $LANGUAGE && \
-    dpkg-reconfigure locales && \
-    update-locale LANG=pt_BR.UTF-8 && \
-    echo "$TIMEZONE" > /etc/timezone && \
+RUN ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
     dpkg-reconfigure -f noninteractive tzdata
 
-RUN 
+#    locale-gen $LANGUAGE && \
+#    dpkg-reconfigure locales && \
+#    update-locale LANG=pt_BR.UTF-8 && \
+#    echo "$TZ" > /etc/timezone && \
+
 #Onde os dados serão salvos
 VOLUME /var/www/html/
 #Porta exposta

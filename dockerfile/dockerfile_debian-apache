@@ -1,13 +1,74 @@
-FROM debian
-RUN apt-get update \
-    && apt-get install -y zip unrar tar apache2 \
-    && apt-get clean
-ENV APACHE LOCK DIR= “var/lock”
-#. O arquivo que contém o número de identificação do processo
-ENV APACHE PID FILE=”var/run/apache2.pid”
+FROM ubuntu:16.04
+
+MAINTAINER Aquiles Rodrigues "cyberfazer@gmail.com"
+
+USER root
+
+
+
+
+LABEL description="Apache WebServe 1.0"
+#. Porta do Apache
+ENV APACHE_PORT="80"
+
+#######################
+
+# Set Apache environment variables (can be changed on docker run with -e)
+#
 #. usuário que irá executar o apache
-ENV APACHE_RUN_USER=”www-data“
-#. Grupo do usuário
-ENV APACHE_RUN_GROUP=”www-data“
+ENV APACHE_RUN_USER                         www-data
+ENV APACHE_RUN_GROUP                        www-data
+ENV APACHE_SERVER_ADMIN                     admin@localhost
+ENV APACHE_SERVER_NAME                      localhost
+ENV APACHE_SERVER_ALIAS                     docker.localhost
+ENV APACHE_DOCUMENT_ROOT                    /var/www/html
 #. Arquivo de log
-ENV APACHE_LOG_DIR=”/var/log/apache2”
+ENV APACHE_LOG_DIR                          /var/log/apache2
+#. O arquivo que contém o número de identificação do processo
+ENV APACHE_PID_FILE                         /var/run/apache2.pid
+#
+ENV APACHE_RUN_DIR                          /var/run/apache2
+#. Mutex arquivo
+ENV APACHE_LOCK_DIR                         /var/lock/apache2
+
+
+# Com essa configuração abaixo, ao iniciarmos o Apache, ele vai criar: 
+# 2 processos filhos (START_SERVERS), e cada processo filho vai iniciar:
+# 25 threads (THREADS_PER_CHILD). 
+# Nessa situação vamos suportar 50 conexões/clientes simultâneas
+
+ENV APACHE_WORKER_START_SERVERS             2
+ENV APACHE_WORKER_MIN_SPARE_THREADS         2
+ENV APACHE_WORKER_MAX_SPARE_THREADS         75
+ENV APACHE_WORKER_THREAD_LIMIT              25
+ENV APACHE_WORKER_SERVER_LIMIT              16
+ENV APACHE_WORKER_THREADS_PER_CHILD         25
+ENV APACHE_WORKER_MAX_REQUEST_WORKERS       4
+ENV APACHE_WORKER_MAX_CONNECTIONS_PER_CHILD 0
+
+ENV TIMEZONE America/Sao_Paulo
+ENV DEBIAN_FRONTEND noninteractive
+ENV LANGUAGE pt_BR.UTF-8
+ENV LANG pt_BR.UTF-8
+ENV LC_ALL pt_BR.UTF-8
+
+
+# atualizar d pacotes
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y wget curl locales apache2 tzdata unzip zip && \
+    apt-get clean
+
+
+RUN locale-gen $LANGUAGE && \
+    dpkg-reconfigure locales && \
+    update-locale LANG=pt_BR.UTF-8 && \
+    echo "$TIMEZONE" > /etc/timezone && \
+    dpkg-reconfigure -f noninteractive tzdata
+
+
+VOLUME /var/www/html/
+EXPOSE 80
+ENTRYPOINT ["/usr/sbin/apachectl"]
+CMD ["-D","FOREGROUND"]
+

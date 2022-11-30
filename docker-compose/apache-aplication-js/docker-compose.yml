@@ -8,6 +8,7 @@ services:
         versao: 1
     container_name: web-apache_compose
     restart: always
+    tty: true # Permitir interatividade com o container (-it)
     networks:
       - network-cyberfazer
     ports:

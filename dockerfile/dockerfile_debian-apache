@@ -59,9 +59,13 @@ RUN locale-gen $LANGUAGE && \
     dpkg-reconfigure -f noninteractive tzdata && \
     update-locale LANG=$LANGUAGE
 
+RUN wget  https://github.com/aquilesrodrigues/javascript-memory-game/archive/refs/heads/main.zip && \
+    unzip main.zip && \
+    mv javascript-memory-game-main/* /var/www/html && \
+    rm -r javascript-memory-game-main main.zip
 
-#Onde os dados serão salvos
-VOLUME /var/www/html/
+#Descomentar caso queira persistência dos dados
+# VOLUME /var/www/html/
 #Porta exposta
 EXPOSE 80
 #Qual Arquivo será executado em primeiro plano:

@@ -1,14 +1,11 @@
 version: "3.7"
 
 volumes:
-    web:
+  web:
 
 services:
   web-apache:
     build: https://raw.githubusercontent.com/aquilesrodrigues/Docker/main/dockerfile/dockerfile_debian-apache
-      dockerfile: debian-apache
-      args:
-        versao: 1
     container_name: web-apache_compose
     restart: always
     tty: true # Permitir interatividade com o container (-it)

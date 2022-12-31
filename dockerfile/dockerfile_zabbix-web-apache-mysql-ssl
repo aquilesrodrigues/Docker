@@ -2,7 +2,7 @@ FROM zabbix/zabbix-web-apache-mysql:6.0-ubuntu-latest
 
 MAINTAINER Aquiles Rodrigues "cyberfazer@gmail.com"
 
-LABEL description="Apache WebServe 1.0"
+LABEL description="Zabbix Web "
 
 USER root
 

@@ -13,36 +13,35 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - "./zabbix/mysql:/var/lib/data"
-    environment:
-      - MYSQL_ROOT_PASSWORD=carryontech
-      - MYSQL_DATABASE=zabbix
-      - MYSQL_USER=zabbix
-      - MYSQL_PASSWORD=carryontech
+      - data:/var/lib/data
+    env_file:
+      - conexao.env
 
-# ==============================================================
-# --------------------------------------------------------------
+  # ==============================================================
+  # --------------------------------------------------------------
 
- zabbix-frontend:
+  zabbix-frontend:
     container_name: zabbix-frontend
-    image: zabbix/zabbix-web-apache-mysql:6.0-ubuntu-latest
+    image: zabbix/zabbix-web-apache-mysql:6.2.6-ubuntu
     networks:
       - network-cyberfazer
     links:
       - mysql
     restart: always
     ports:
-      - '80:8080'
-      - '443:8443'
-    environment:
-      - DB_SERVER_HOST=mysql
-      - MYSQL_DATABASE=zabbix
-      - MYSQL_USER=zabbix
-      - MYSQL_PASSWORD=carryontech
-      - PHP_TZ=America/Sao_Paulo
+      - "80:8080"
+      - "443:8443"
+    volumes:
+      - ssl:/etc/ssl/apache2
+    env_file:
+      - conexao.env
+
     depends_on:
       - mysql
 
+volumes:
+  ssl:
+  data:
 # ==============================================================
 # --------------------------------------------------------------
 

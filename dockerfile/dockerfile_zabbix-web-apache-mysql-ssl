@@ -29,3 +29,7 @@ WORKDIR /var/lib/zabbix
 chown --quiet -R zabbix:root /etc/zabbix/ /var/lib/zabbix/ && \
     chgrp -R 0 /etc/zabbix/ /var/lib/zabbix/ && \
     chmod -R g=u /etc/zabbix/ /var/lib/zabbix/ && \
+
+     /etc/ssl/apache2/
+     /etc/zabbix/web/certs
+     

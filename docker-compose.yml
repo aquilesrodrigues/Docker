@@ -1,0 +1,24 @@
+version: '2'
+
+services: 
+	dboracle: 
+	  image: oracle/database:21.3.0-ee # image_name:tag
+	  container_name: dboracle 
+	  hostname: dboracle 
+	  domainname: cyberfazer.com 
+	  environment: 
+	 	  ORACLE_SID: MYCDB # Container database name 
+		  ORACLE_PDB: MYPDB # Pluggable database name 
+		  ORACLE_PWD: your password 
+		  ORACLE_CHARACTERSET: AL32UTF8 
+		  ORA_SDTZ: Brazil
+    volumes:
+      - /home/oracle/oradata:/opt/oracle/oradata # persistent oracle database data. 
+	  ports: 
+      - 1521:1521
+      - 8080:8080
+      - 5500:5500 
+	  tty: true 
+	  extra_hosts: 
+		  - hostname:192.168.0.11
+	  privileged: true

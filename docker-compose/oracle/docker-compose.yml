@@ -1,0 +1,67 @@
+version: '2'
+
+services: 
+  dboracle: 
+    image: oracle/database:21.3.0-ee # image_name:tag
+    container_name: dboracle 
+    hostname: dboracle 
+    domainname: cyberfazer.com 
+    restart: always
+    networks:
+      - local-cyberfazer
+    env_file:
+      - conexao.env
+    volumes:
+      - /opt/oracle/oradata:/opt/oracle/oradata # persistent oracle database data. 
+    ports: 
+      - 1521:1521
+      - 5500:5500 
+    tty: true 
+    extra_hosts: 
+      - hostname:192.168.0.11
+    privileged: true
+
+# --------------------------------------------------------------
+
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    networks:
+      - local-cyberfazer
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Recife
+      - VERSION=docker
+      - PLEX_CLAIM= #optional
+    volumes:
+      - /mnt/c/DADOS/PLEX/movies:/movies
+      - /mnt/c/DADOS/PLEX/images:/images
+      - /mnt/c/DADOS/PLEX/config:/config
+      - /mnt/c/DADOS/PLEX/transcode:/transcode
+      - /mnt/c/DADOS/PLEX/tvshows:/tv
+    ports:
+      - 3005:3005/tcp
+      - 8324:8324/tcp
+      - 32469:32469/tcp
+      - 32400:32400/tcp
+      - 1900:1900/udp
+      - 5353:5353/udp
+      - 32410:32410/udp
+      - 32412:32412/udp
+      - 32413:32413/udp
+      - 32414:32414/udp
+
+
+    restart: unless-stopped
+
+# ==============================================================
+# --------------------------------------------------------------
+
+networks:
+  local-cyberfazer:
+    driver: bridge
+    ipam:
+      driver: default
+# ==============================================================
+# **************************************************************

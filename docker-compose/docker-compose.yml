@@ -1,8 +1,9 @@
 version: '2'
 
 services: 
-	dboracle: 
-	  image: oracle/database:21.3.0-ee # image_name:tag
+
+  dboracle: 
+		image: oracle/database:21.3.0-ee # image_name:tag
 	  container_name: dboracle 
 	  hostname: dboracle 
 	  domainname: cyberfazer.com 

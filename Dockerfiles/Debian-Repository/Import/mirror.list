@@ -2,6 +2,7 @@
 #
 # /etc/apt/mirror.list
 #
+# Base setting modify for DADOS
 set base_path    /dados/apt-mirror
 #
 set mirror_path  $base_path/mirror

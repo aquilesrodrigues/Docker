@@ -9,7 +9,8 @@ RUN ln -s /var/spool/apt-mirror/mirror/
 RUN ln -s /var/spool/apt-mirror/mirror/ftp.br.debian.org/debian/ /var/www/debian \
 &&  ln -s /var/spool/apt-mirror/mirror/deb.debian.org/debian-security/ /var/www/debian-security \
 &&  ln -s /var/spool/apt-mirror/mirror/mirror.uepg.br/ubuntu/ /var/www/ubuntu \
-&&  ln -s /var/spool/apt-mirror/mirror/security.ubuntu.com/ubuntu/ /var/www/ubuntu-security
+&&  ln -s /var/spool/apt-mirror/mirror/security.ubuntu.com/ubuntu/ /var/www/ubuntu-security \
+&&  ln -s /var/spool/apt-mirror/mirror/repo.zabbix.com/zabbix/6.5/debian /var/www/zabbix
 COPY ./Import/mirror.list /etc/apt/
 RUN apt-mirror
 EXPOSE 80

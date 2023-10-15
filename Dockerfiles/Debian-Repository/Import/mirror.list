@@ -2,9 +2,9 @@
 #
 # /etc/apt/mirror.list
 #
-# set base_path    /var/spool/apt-mirror
+set base_path    /dados/apt-mirror
 #
-# set mirror_path  $base_path/mirror
+set mirror_path  $base_path/mirror
 # set skel_path    $base_path/skel
 # set var_path     $base_path/var
 # set cleanscript $var_path/clean.sh

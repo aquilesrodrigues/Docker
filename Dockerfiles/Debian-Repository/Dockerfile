@@ -14,4 +14,5 @@ RUN ln -s /var/spool/apt-mirror/mirror/ftp.br.debian.org/debian/ /var/www/debian
 &&  ln -s /var/spool/apt-mirror/mirror/security.ubuntu.com/ubuntu/ /var/www/ubuntu-security
 COPY ./import/mirror.list /etc/apt/
 RUN apt-mirror
-
+EXPOSE 80
+CMD ["/usr/sbin/apache2ctl", "D", "FOREGROUND"]

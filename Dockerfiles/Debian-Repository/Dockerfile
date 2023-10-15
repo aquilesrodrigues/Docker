@@ -4,7 +4,7 @@ COPY ./Import/debian.sources /etc/apt/sources.list.d/
 RUN apt-get update && apt-get upgrade -y 
 RUN apt-get install apt-mirror -y && apt-get install apache2 -y
 COPY ./Import/000-default.conf /etc/apache2/sites-enabled/
-RUN service apache2 restart
+RUN /etc/init.d/apache2 restart
 RUN ln -s /var/spool/apt-mirror/mirror/
 RUN ln -s /var/spool/apt-mirror/mirror/ftp.br.debian.org/debian/ /var/www/debian \
 &&  ln -s /var/spool/apt-mirror/mirror/deb.debian.org/debian-security/ /var/www/debian-security \

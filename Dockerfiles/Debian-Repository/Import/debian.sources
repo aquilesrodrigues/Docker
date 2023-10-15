@@ -1,0 +1,12 @@
+# /etc/apt/sources.list.d/debian.sources
+Types: deb
+URIs: http://ftp.br.debian.org/debian
+Suites: bookworm bookworm-updates
+Components: main contrib non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+
+Types: deb
+URIs: http://deb.debian.org/debian-security
+Suites: bookworm-security
+Components: main contrib non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg

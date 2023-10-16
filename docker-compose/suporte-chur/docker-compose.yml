@@ -1,0 +1,35 @@
+version: '3.5'
+services:
+  database-micros:
+    image: mysql:8.1.0
+    env_file: db-books/database.conf
+  networks:
+    network-zabbix:
+	  driver: bridge
+  web:
+    image: php:7.4.12-apache-buster
+    volumes:
+      - ./web:/var/www/html 
+    ports:
+      - 80:80 
+    depends_on:
+      - api-readers
+      - api-books
+  mysql:
+    container_name: mysql-chur
+    image: mysql:8.1.0
+    networks:
+      - network-chur
+    ports:
+      - '3306:3306'
+    volumes:
+      - '/dados/docker/persistent/mysql/data/:/var/lib/data'
+    environment:
+      - MYSQL_ROOT_PASSWORD=carryontech
+      - MYSQL_DATABASE=zabbix
+      - MYSQL_USER=zabbix
+      - MYSQL_PASSWORD=carryontech
+
+volumes:
+  db_volume-books:
+  db_volume-readers:

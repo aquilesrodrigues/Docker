@@ -5,7 +5,8 @@ volumes:
 
 services:
   web-apache:
-    build: https://raw.githubusercontent.com/aquilesrodrigues/Docker/main/dockerfile/dockerfile_debian-apache
+           
+    build: https://raw.githubusercontent.com/aquilesrodrigues/Docker/main/Dockerfiles/debian-Apache/Dockerfile
     container_name: web-apache_compose
     restart: always
     tty: true # Permitir interatividade com o container (-it)
@@ -14,7 +15,7 @@ services:
     ports:
       - "80:80"
     volumes:
-      - web:/var/www/html
+      - web:/var/www
 
 # ==============================================================
 # --------------------------------------------------------------

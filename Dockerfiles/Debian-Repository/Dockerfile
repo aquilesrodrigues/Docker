@@ -1,5 +1,9 @@
 FROM debian:bookworm            
 
+LABEL version="1.0"
+LABEL description="Debian Mirror"
+
+# COPY --chown=myuser:mygroup --chmod=644 files* /somedir/
 COPY ./Import/debian.sources /etc/apt/sources.list.d/
 RUN apt-get update && apt-get upgrade -y 
 RUN apt-get install apt-mirror -y && apt-get install apache2 -y
@@ -15,3 +19,4 @@ COPY ./Import/mirror.list /etc/apt/
 RUN apt-mirror
 EXPOSE 80
 CMD ["/usr/sbin/apache2ctl", "D", "FOREGROUND"]
+

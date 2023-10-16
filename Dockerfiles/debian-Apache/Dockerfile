@@ -1,7 +1,7 @@
-FROM ubuntu:16.04
+FROM debian:bookworm 
 
-MAINTAINER Aquiles Rodrigues "cyberfazer@gmail.com"
-
+LABEL org.opencontainers.image.authors="cyberfazer@gmail.com"
+LABEL version="1.0"
 LABEL description="Apache WebServe 1.0"
 
 USER root
@@ -11,10 +11,10 @@ USER root
 #. usuário que irá executar o apache
 ENV APACHE_RUN_USER                         www-data
 ENV APACHE_RUN_GROUP                        www-data
-ENV APACHE_SERVER_ADMIN                     admin@localhost
+ENV APACHE_SERVER_ADMIN                     suporte@localhost
 ENV APACHE_SERVER_NAME                      localhost
 ENV APACHE_SERVER_ALIAS                     docker.localhost
-ENV APACHE_DOCUMENT_ROOT                    /var/www/html
+ENV APACHE_DOCUMENT_ROOT                    /var/www
 #. Arquivo de log
 ENV APACHE_LOG_DIR                          /var/log/apache2
 #. O arquivo que contém o número de identificação do processo
@@ -59,13 +59,15 @@ RUN locale-gen $LANGUAGE && \
     dpkg-reconfigure -f noninteractive tzdata && \
     update-locale LANG=$LANGUAGE
 
+# Inserir uma pequena página de exemplo
 RUN wget  https://github.com/aquilesrodrigues/javascript-memory-game/archive/refs/heads/main.zip && \
     unzip main.zip && \
-    mv javascript-memory-game-main/* /var/www/html && \
+    mv javascript-memory-game-main/* /var/www/ && \
     rm -r javascript-memory-game-main main.zip
 
 #Descomentar caso queira persistência dos dados
-# VOLUME /var/www/html/
+VOLUME /var/www/
+
 #Porta exposta
 EXPOSE 80
 #Qual Arquivo será executado em primeiro plano:

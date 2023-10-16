@@ -2,14 +2,14 @@ version: '3.5'
 services:
   database-micros:
     image: mysql:8.1.0
-    env_file: db-books/database.conf
+    env_file: /dados/docker/environment/database-micros/database.conf
   networks:
     network-zabbix:
 	  driver: bridge
   web:
     image: php:7.4.12-apache-buster
     volumes:
-      - ./web:/var/www/html 
+      - /dados/docker/persistent/www:/var/www 
     ports:
       - 80:80 
     depends_on:

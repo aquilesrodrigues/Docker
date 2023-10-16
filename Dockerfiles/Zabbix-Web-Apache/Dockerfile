@@ -3,7 +3,7 @@ ARG BUILD_BASE_IMAGE=zabbix/zabbix-web-apache-mysql:6.0-ubuntu-latest
 
 FROM ${BUILD_BASE_IMAGE} as builder
 
-MAINTAINER Aquiles Rodrigues "cyberfazer@gmail.com"
+LABEL Maintainer: "Aquiles Rodrigues - cyberfazer@gmail.com"
 
 LABEL description="Zabbix Web "
 

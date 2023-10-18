@@ -1,18 +1,18 @@
-version: '3.5'
+version: "3.5"
 services:
   database-micros:
     image: mysql:8.1.0
     restart: always
-    env_file: /environment/database-micros/database.conf
+    env_file: /dados/docker/environment/mysql/db-micros/database.conf
     volumes:
-      - '/dados/docker/persistent/mysql/data/:/var/lib/mysql'    
+      - "/dados/docker/persistent/mysql/data/:/var/lib/mysql"
 
   web:
     image: php:7.4.12-apache-buster
     volumes:
-      - /dados/docker/persistent/www:/var/www 
+      - /dados/docker/persistent/www/html:/var/www/html
     ports:
-      - 80:80 
+      - 80:80
     depends_on:
       - api-readers
       - api-books
@@ -24,9 +24,9 @@ services:
     networks:
       - network-chur
     ports:
-      - '3306:3306'
+      - "3306:3306"
     volumes:
-      - '/dados/docker/persistent/mysql/data/:/var/lib/mysql'
+      - "/dados/docker/persistent/mysql/data/:/var/lib/mysql"
       - /etc/localtime:/etc/localtime:ro
     environment:
       - MYSQL_ROOT_PASSWORD=carryontech

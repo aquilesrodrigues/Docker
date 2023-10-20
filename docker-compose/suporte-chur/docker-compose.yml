@@ -30,6 +30,7 @@ services:
       context: .
       dockerfile: Dockerfile
     image: php-fpm
+    restart: always
     container_name: php-fpm
     networks:
       - network-chur
@@ -54,7 +55,6 @@ services:
     networks:
       - network-chur
     env_file:
-    
       - "/dados/docker/environment/zabbix/sgbd/mysql.env"
     volumes:
       - "/dados/docker/persistent/mysql/data:/var/lib/mysql"
@@ -77,11 +77,6 @@ services:
       # /etc/zabbix/zabbix_server.conf
     env_file:
       - "/dados/docker/environment/zabbix/sgbd/mysql.env"
-    environment:
-      - DB_SERVER_HOST=mysql
-      - MYSQL_DATABASE=zabbix
-      - MYSQL_USER=zabbix
-      - MYSQL_PASSWORD=carryontech
 
   zabbix-frontend:
     container_name: zabbix-frontend
@@ -89,7 +84,7 @@ services:
     networks:
       - network-chur
     links:
-      - mysql
+      - sgbd-mysql
     restart: always
     ports:
       - '80:8080'
@@ -97,7 +92,8 @@ services:
     env_file:
       - "/dados/docker/environment/zabbix/sgbd/mysql.env"
     depends_on:
-      - mysql
+      - sgbd-mysql
+      - zabbix-mysql
    
   grafana:
     container_name: grafana
@@ -113,8 +109,9 @@ services:
     environment: 
       - GF_INSTALL_PLUGINS=alexanderzobnin-zabbix-app
     depends_on:
-      - mysql
+      - sgbd-mysql
       - zabbix-server
+
   zabbix-agent:
     container_name: zabbix-agent
     image: zabbix/zabbix-agent2
@@ -129,8 +126,9 @@ services:
       - /var/run:/var/run
     ports:
       - '10050:10050'
-    env_file:
-      - "/dados/docker/environment/zabbix/agent/agent.conf"
+    environment:
+      - ZBX_HOSTNAME=Zabbix server 
+      - ZBX_SERVER_HOST=192.168.20.1
 
 
 ############################################

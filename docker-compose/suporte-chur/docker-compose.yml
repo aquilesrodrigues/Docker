@@ -15,8 +15,10 @@ services:
 
 ####### ZABBIX create Database ##########
   zabbix-mysql:
-    container_name: mysql
+    container_name: zabbix-mysql
     image: mysql:8.0.34
+    ports:
+      - "3306:3301"
     depends_on:
       - sgbd-mysql
     networks:

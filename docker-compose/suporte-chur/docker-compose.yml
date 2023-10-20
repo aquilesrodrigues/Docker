@@ -68,7 +68,7 @@ services:
     networks:
       - network-chur
     links:
-      - mysql
+      - sgbd-mysql
       - zabbix-server
     restart: always
     ports:

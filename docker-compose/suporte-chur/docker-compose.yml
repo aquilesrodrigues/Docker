@@ -54,7 +54,8 @@ services:
     networks:
       - network-chur
     env_file:
-      - "/dados/docker/environment/mysql/zabbix/mysql.env"
+    
+      - "/dados/docker/environment/zabbix/sgbd/mysql.env"
     volumes:
       - "/dados/docker/persistent/mysql/data:/var/lib/mysql"
 ####### ZABBIX INFRA ##########
@@ -75,14 +76,12 @@ services:
       - "/dados/docker/environment/zabbix/server/alertscripts:/usr/lib/zabbix/alertscripts"
       # /etc/zabbix/zabbix_server.conf
     env_file:
-      - "/dados/docker/environment/mysql/zabbix/mysql.env"
+      - "/dados/docker/environment/zabbix/sgbd/mysql.env"
     environment:
       - DB_SERVER_HOST=mysql
       - MYSQL_DATABASE=zabbix
       - MYSQL_USER=zabbix
       - MYSQL_PASSWORD=carryontech
-    depends_on:
-      - mysql
 
   zabbix-frontend:
     container_name: zabbix-frontend
@@ -95,7 +94,8 @@ services:
     ports:
       - '80:8080'
       - '443:8443'
-
+    env_file:
+      - "/dados/docker/environment/zabbix/sgbd/mysql.env"
     depends_on:
       - mysql
    

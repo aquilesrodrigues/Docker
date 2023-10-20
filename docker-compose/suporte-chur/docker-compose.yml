@@ -18,7 +18,7 @@ services:
     container_name: zabbix-mysql
     image: mysql:8.0.34
     ports:
-      - "3306:3301"
+      - "3301:3306"
     depends_on:
       - sgbd-mysql
     networks:

@@ -74,6 +74,8 @@ services:
     volumes:
       - "/dados/docker/environment/zabbix/server/alertscripts:/usr/lib/zabbix/alertscripts"
       # /etc/zabbix/zabbix_server.conf
+    env_file:
+      - "/dados/docker/environment/mysql/zabbix/mysql.env"
     environment:
       - DB_SERVER_HOST=mysql
       - MYSQL_DATABASE=zabbix

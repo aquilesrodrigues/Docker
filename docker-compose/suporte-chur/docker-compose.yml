@@ -9,18 +9,9 @@ services:
     ports:
       - "3306:3306"
     env_file:
-      - "/dados/docker/environment/mysql/sgbd/mysql.conf"
+      - "/dados/docker/environment/mysql/sgbd/mysql.env"
     volumes:
       - "/dados/docker/persistent/mysql/data:/var/lib/mysql"
-  zabbix-mysql:
-    container_name: mysql
-    image: mysql:8.0.34
-    networks:
-      - network-chur
-    env_file:
-      - "/dados/docker/environment/mysql/zabbix/mysql.conf"
-    volumes:
-      - "/dados/docker/persistent/mysql/data:/var/lib/data"
   web:
     image: nginx:latest
     container_name: nginx-php
@@ -54,12 +45,27 @@ services:
       - PMA_HOST = sgbd-mysql
     ports:
       - 8080:80
-############################################
+####### ZABBIX create Database ##########
+  zabbix-mysql:
+    container_name: mysql
+    image: mysql:8.0.34
+    depends_on:
+      - sgbd-mysql
+    networks:
+      - network-chur
+    env_file:
+      - "/dados/docker/environment/mysql/zabbix/mysql.env"
+    volumes:
+      - "/dados/docker/persistent/mysql/data:/var/lib/data"
+####### ZABBIX INFRA ##########
   zabbix-server:
     container_name: zabbix-server
-    image: zabbix/zabbix-server-mysql:ubuntu-5.0.1
+    image: zabbix/zabbix-server-mysql
+    depends_on:
+      - sgbd-mysql
+      - zabbix-mysql
     networks:
-      - network-zabbix
+      - network-chur
     links:
       - mysql
     restart: always
@@ -77,21 +83,16 @@ services:
 
   zabbix-frontend:
     container_name: zabbix-frontend
-    image: zabbix/zabbix-web-apache-mysql:ubuntu-5.0.1
+    image: zabbix/zabbix-web-apache-mysql
     networks:
-      - network-zabbix
+      - network-chur
     links:
       - mysql
     restart: always
     ports:
       - '80:8080'
       - '443:8443'
-    environment:
-      - DB_SERVER_HOST=mysql
-      - MYSQL_DATABASE=zabbix
-      - MYSQL_USER=zabbix
-      - MYSQL_PASSWORD=carryontech
-      - PHP_TZ=America/Sao_Paulo
+
     depends_on:
       - mysql
    
@@ -99,7 +100,7 @@ services:
     container_name: grafana
     image: grafana/grafana
     networks:
-      - network-zabbix
+      - network-chur
     links:
       - mysql
       - zabbix-server
@@ -113,10 +114,10 @@ services:
       - zabbix-server
   zabbix-agent:
     container_name: zabbix-agent
-    image: zabbix/zabbix-agent2:alpine-5.0.1
+    image: zabbix/zabbix-agent2
     user: root
     networks:
-      - network-zabbix
+      - network-chur
     links:
       - zabbix-server
     restart: always
@@ -125,9 +126,9 @@ services:
       - /var/run:/var/run
     ports:
       - '10050:10050'
-    environment:
-      - ZBX_HOSTNAME=Zabbix server
-      - ZBX_SERVER_HOST=172.18.0.1
+    env_file:
+      - "/dados/docker/environment/zabbix/agent/agent.conf"
+
 
 ############################################
 networks:

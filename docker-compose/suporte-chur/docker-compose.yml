@@ -1,9 +1,10 @@
 version: "3.5"
 
 services:
-  sgbd-mysql:
+  mysql-server:
     image: mysql:8.0.34
-    container_name: sgbd-mysql
+    container_name: mysql-server
+    restart: always
     networks:
       - network-chur
     ports:
@@ -12,35 +13,36 @@ services:
       - "/dados/docker/environment/mysql/sgbd/mysql.env"
     volumes:
       - "/dados/docker/persistent/mysql/data:/var/lib/mysql"
+      - "/etc/localtime:/etc/localtime:ro"
 
-####### ZABBIX create Database ##########
+  ####### ZABBIX create Database ##########
   zabbix-mysql:
     container_name: zabbix-mysql
     image: mysql:8.0.34
     ports:
       - "3301:3306"
     depends_on:
-      - sgbd-mysql
+      - mysql-server
     networks:
       - network-chur
     env_file:
       - "/dados/docker/environment/zabbix/sgbd/mysql.env"
     volumes:
       - "/dados/docker/persistent/mysql/data:/var/lib/mysql"
-####### ZABBIX INFRA ##########
+  ####### ZABBIX INFRA ##########
   zabbix-server:
     container_name: zabbix-server
     image: zabbix/zabbix-server-mysql
     depends_on:
-      - sgbd-mysql
+      - mysql-server
       - zabbix-mysql
     networks:
       - network-chur
     links:
-      - sgbd-mysql
+      - mysql-server
     restart: always
     ports:
-      - '10051:10051'
+      - "10051:10051"
     volumes:
       - "/dados/docker/environment/zabbix/server/alertscripts:/usr/lib/zabbix/alertscripts"
       # /etc/zabbix/zabbix_server.conf
@@ -53,32 +55,32 @@ services:
     networks:
       - network-chur
     links:
-      - sgbd-mysql
+      - mysql-server
     restart: always
     ports:
-      - '80:8080'
-      - '443:8443'
+      - "80:8080"
+      - "443:8443"
     env_file:
       - "/dados/docker/environment/zabbix/sgbd/mysql.env"
     depends_on:
-      - sgbd-mysql
+      - mysql-server
       - zabbix-mysql
-   
+
   grafana:
     container_name: grafana
     image: grafana/grafana
     networks:
       - network-chur
     links:
-      - sgbd-mysql
+      - mysql-server
       - zabbix-server
     restart: always
     ports:
-      - '3000:3000'
-    environment: 
+      - "3000:3000"
+    environment:
       - GF_INSTALL_PLUGINS=alexanderzobnin-zabbix-app
     depends_on:
-      - sgbd-mysql
+      - mysql-server
       - zabbix-server
 
   zabbix-agent:
@@ -94,9 +96,9 @@ services:
     volumes:
       - /var/run:/var/run
     ports:
-      - '10050:10050'
+      - "10050:10050"
     environment:
-      - ZBX_HOSTNAME=Zabbix server 
+      - ZBX_HOSTNAME=Zabbix server
       - ZBX_SERVER_HOST=192.168.20.1
 
 # ===================================================
@@ -130,12 +132,11 @@ services:
 #    image: phpmyadmin:5.2.1-fpm
 #    container_name: phpmyadmin
 #    depends_on:
-#      - sgbd-mysql
+#      - mysql-server
 #    environment:
-#      - PMA_HOST = sgbd-mysql
+#      - PMA_HOST = mysql-server
 #    ports:
 #      - 8080:80
-
 
 ############################################
 networks:

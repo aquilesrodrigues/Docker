@@ -58,10 +58,13 @@ services:
       - mysql-server
     restart: always
     ports:
-      - "80:8080"
-      - "443:8443"
+      - "8080:8080"
+      - "8443:8443"
     env_file:
       - "/dados/docker/environment/zabbix/sgbd/mysql.env"
+    environment:
+      - ZBX_SERVER_HOST="127.0.0.1"
+      - DB_SERVER_HOST="127.0.0.1"
     depends_on:
       - mysql-server
       - zabbix-mysql
@@ -99,7 +102,7 @@ services:
       - "10050:10050"
     environment:
       - ZBX_HOSTNAME=Zabbix server
-      - ZBX_SERVER_HOST=192.168.20.1
+      - ZBX_SERVER_HOST="127.0.0.1,localhost"
 
 # ===================================================
 

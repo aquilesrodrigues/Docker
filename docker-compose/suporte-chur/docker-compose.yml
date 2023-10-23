@@ -51,7 +51,7 @@ services:
 
   zabbix-frontend:
     container_name: zabbix-frontend
-    image: zabbix/zabbix-web-nginx-mysql
+    image: zabbix/zabbix-web-nginx-mysq:trunk-ubuntu
     networks:
       - network-chur
     links:

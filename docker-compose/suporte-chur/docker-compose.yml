@@ -2,52 +2,41 @@ version: "3.5"
 
 services:
   mysql-server:
-    image: mysql:8.0.34
     container_name: mysql-server
+    image: mysql:8.0.34
     restart: always
-    networks:
-      - network-chur
-    ports:
-      - "3306:3306"
     env_file:
       - "/dados/docker/environment/mysql/sgbd/mysql.env"
     volumes:
       - "/dados/docker/persistent/mysql/data:/var/lib/mysql"
       - "/etc/localtime:/etc/localtime:ro"
-
-  ####### ZABBIX create Database ##########
-  zabbix-mysql:
-    container_name: zabbix-mysql
-    image: mysql:8.0.34
+    network:
+      network-chur:
+        ipv4_address: 10.200.0.10
     ports:
-      - "3301:3306"
-    depends_on:
-      - mysql-server
-    networks:
-      - network-chur
-    env_file:
-      - "/dados/docker/environment/zabbix/sgbd/mysql.env"
-    volumes:
-      - "/dados/docker/persistent/mysql/data:/var/lib/mysql"
+      - "3306:3306"
+
   ####### ZABBIX INFRA ##########
   zabbix-server:
     container_name: zabbix-server
     image: zabbix/zabbix-server-mysql
+    restart: always
+    pull_policy: always
     depends_on:
       - mysql-server
-      - zabbix-mysql
-    networks:
-      - network-chur
-    links:
-      - mysql-server
-    restart: always
-    ports:
-      - "10051:10051"
-    volumes:
-      - "/dados/docker/environment/zabbix/server/alertscripts:/usr/lib/zabbix/alertscripts"
-      # /etc/zabbix/zabbix_server.conf
     env_file:
       - "/dados/docker/environment/zabbix/sgbd/mysql.env"
+    environment:
+      - DB_SERVER_HOST=10.200.0.10
+      - DB_SERVER_PORT=3306
+    volumes:
+      - "/dados/docker/environment/zabbix/server/alertscripts:/usr/lib/zabbix/alertscripts"
+      - "/dados/docker/persistent/zabbix/server/module:/var/lib/zabbix/modules"
+    network:
+      network-chur:
+        ipv4_address: 10.200.0.7
+    ports:
+      - "10051:10051"
 
   zabbix-frontend:
     container_name: zabbix-frontend
@@ -57,26 +46,23 @@ services:
     links:
       - mysql-server
     restart: always
-    ports:
-      - "8080:8080"
-      - "8443:8443"
     env_file:
       - "/dados/docker/environment/zabbix/sgbd/mysql.env"
     environment:
-      - ZBX_SERVER_HOST="127.0.0.1"
-      - DB_SERVER_HOST="127.0.0.1"
+      - ZBX_SERVER_HOST="10.200.0.7"
+      - DB_SERVER_HOST="10.200.0.10"
     depends_on:
       - mysql-server
       - zabbix-mysql
-
+    network:
+      network-chur:
+        ipv4_address: 10.200.0.8
+    ports:
+      - "8080:8080"
+      - "8443:8443"
   grafana:
     container_name: grafana
     image: grafana/grafana
-    networks:
-      - network-chur
-    links:
-      - mysql-server
-      - zabbix-server
     restart: always
     ports:
       - "3000:3000"
@@ -85,15 +71,14 @@ services:
     depends_on:
       - mysql-server
       - zabbix-server
+    network:
+      network-chur:
+        ipv4_address: 10.200.0.11
 
   zabbix-agent:
     container_name: zabbix-agent
     image: zabbix/zabbix-agent2
     user: root
-    networks:
-      - network-chur
-    links:
-      - zabbix-server
     restart: always
     privileged: true
     volumes:
@@ -102,7 +87,10 @@ services:
       - "10050:10050"
     environment:
       - ZBX_HOSTNAME=Zabbix server
-      - ZBX_SERVER_HOST="127.0.0.1,localhost"
+      - ZBX_SERVER_HOST="10.200.0.7,localhost"
+    network:
+      network-chur:
+        ipv4_address: 10.200.0.12
 
 # ===================================================
 
@@ -145,3 +133,7 @@ services:
 networks:
   network-chur:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 10.200.0.0/24
+          gateway: 10.200.0.1

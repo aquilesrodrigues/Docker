@@ -10,6 +10,12 @@ services:
     volumes:
       - "/dados/docker/persistent/mysql/data:/var/lib/mysql"
       - "/etc/localtime:/etc/localtime:ro"
+    command:
+      [
+        "mysqld",
+        "--character-set-server=utf8mb4",
+        "--collation-server=utf8mb4_unicode_ci",
+      ]
     network:
       network-chur:
         ipv4_address: 10.200.0.10

@@ -51,7 +51,7 @@ services:
 
   zabbix-frontend:
     container_name: zabbix-frontend
-    image: zabbix/zabbix-web-apache-mysql
+    image: zabbix/zabbix-web-nginx-mysql
     networks:
       - network-chur
     links:

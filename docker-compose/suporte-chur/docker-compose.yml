@@ -17,6 +17,7 @@ services:
         "--character-set-server=utf8mb4",
         "--collation-server=utf8mb4_unicode_ci",
       ]
+      # ou substituir por este --collation-server=utf8mb4_bin
     network:
       network-chur:
         ipv4_address: 10.200.0.10

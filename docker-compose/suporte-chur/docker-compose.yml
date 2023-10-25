@@ -8,7 +8,7 @@ services:
     env_file:
       - "/dados/docker/environment/mysql/sgbd/mysql.env"
     volumes:
-      - "/dados/docker/persistent/mysql/data:/var/lib/mysql"
+      - "/dados/docker/persistent/mysql/data:/var/lib/mysql:rw"
       - "/etc/localtime:/etc/localtime:ro"
       #     - dbsocket:/var/run/mysqld/
     command:

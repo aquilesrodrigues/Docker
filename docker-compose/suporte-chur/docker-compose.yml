@@ -46,12 +46,9 @@ services:
 
   zabbix-frontend:
     container_name: zabbix-frontend
-    image: zabbix/zabbix-web-nginx-mysq:trunk-ubuntu
-    networks:
-      - network-chur
-    links:
-      - mysql-server
+    image: zabbix/zabbix-web-nginx-mysq:ubuntu-trunk
     restart: always
+    pull_policy: always
     env_file:
       - "/dados/docker/environment/zabbix/sgbd/mysql.env"
     environment:

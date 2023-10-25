@@ -1,4 +1,4 @@
-version: "3.5"
+version: "3.8"
 
 services:
   mysql-server:
@@ -18,7 +18,7 @@ services:
         "--collation-server=utf8mb4_unicode_ci",
       ]
       # ou substituir por este --collation-server=utf8mb4_bin
-    network:
+    networks:
       network-chur:
         ipv4_address: 10.200.0.10
     ports:
@@ -49,11 +49,11 @@ services:
       - /dados/docker/persistent/zabbix/var/lib/ssh_keys:/var/lib/zabbix/ssh_keys:ro
       - /dados/docker/persistent/zabbix/var/lib/mibs:/var/lib/zabbix/mibs:ro
       - /dados/docker/persistent/zabbix/var/lib/snmptraps:/var/lib/zabbix/snmptraps:rw
-    network:
-      network-chur:
-        ipv4_address: 10.200.0.7
     ports:
       - "10051:10051"
+    networks:
+      network-chur:
+        ipv4_address: 10.200.0.7
     labels:
       com.zabbix.description: "Zabbix server with MySQL database support"
       com.zabbix.company: "Zabbix LLC"
@@ -74,16 +74,16 @@ services:
     depends_on:
       - mysql-server
       - zabbix-server
-    network:
-      network-chur:
-        ipv4_address: 10.200.0.8
-    ports:
-      - "8080:8080"
-      - "8443:8443"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /dados/docker/persistent/zabbix/var/lib/modules/:/var/lib/zabbix/modules:ro
       - /dados/docker/persistent/nginx/etc/ssl:/etc/ssl/nginx:ro
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    networks:
+      network-chur:
+        ipv4_address: 10.200.0.8
     labels:
       com.zabbix.description: "Zabbix frontend on Nginx web-server with  MySQL  database support"
       com.zabbix.company: "Zabbix LLC"
@@ -110,11 +110,8 @@ services:
           cpus: "0.25"
           memory: 128M
     networks:
-      zbx_net_frontend:
-        aliases:
-          - zabbix-snmptraps
-      zbx_net_backend:
-    stop_grace_period: 5s
+      network-chur:
+        ipv4_address: 10.200.0.5
     labels:
       com.zabbix.description: "Zabbix snmptraps"
       com.zabbix.company: "Zabbix LLC"
@@ -139,7 +136,7 @@ services:
     environment:
       - ZBX_HOSTNAME=Zabbix server
       - ZBX_SERVER_HOST="10.200.0.7,localhost"
-    network:
+    networks:
       network-chur:
         ipv4_address: 10.200.0.12
     labels:
@@ -159,7 +156,7 @@ services:
     depends_on:
       - mysql-server
       - zabbix-server
-    network:
+    networks:
       network-chur:
         ipv4_address: 10.200.0.11
     labels:

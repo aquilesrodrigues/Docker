@@ -10,6 +10,16 @@ services:
     volumes:
       - "/dados/docker/persistent/mysql/data:/var/lib/mysql"
       - "/etc/localtime:/etc/localtime:ro"
+      #     - dbsocket:/var/run/mysqld/
+      - /dados/docker/persistent/zabbix/usr/lib/alertscripts:/usr/lib/zabbix/alertscripts:ro
+      - /dados/docker/persistent/zabbix/usr/lib/externalscripts:/usr/lib/zabbix/externalscripts:ro
+      - /dados/docker/persistent/zabbix/var/lib/dbscripts:/var/lib/zabbix/dbscripts:ro
+      - /dados/docker/persistent/zabbix/var/lib/export:/var/lib/zabbix/export:rw
+      - /dados/docker/persistent/zabbix/var/lib/modules:/var/lib/zabbix/modules:ro
+      - /dados/docker/persistent/zabbix/var/lib/enc:/var/lib/zabbix/enc:ro
+      - /dados/docker/persistent/zabbix/var/lib/ssh_keys:/var/lib/zabbix/ssh_keys:ro
+      - /dados/docker/persistent/zabbix/var/lib/mibs:/var/lib/zabbix/mibs:ro
+      - /dados/docker/persistent/zabbix/var/lib/snmptraps:/var/lib/zabbix/snmptraps:rw
     command:
       [
         "mysqld",

@@ -11,15 +11,6 @@ services:
       - "/dados/docker/persistent/mysql/data:/var/lib/mysql"
       - "/etc/localtime:/etc/localtime:ro"
       #     - dbsocket:/var/run/mysqld/
-      - /dados/docker/persistent/zabbix/usr/lib/alertscripts:/usr/lib/zabbix/alertscripts:ro
-      - /dados/docker/persistent/zabbix/usr/lib/externalscripts:/usr/lib/zabbix/externalscripts:ro
-      - /dados/docker/persistent/zabbix/var/lib/dbscripts:/var/lib/zabbix/dbscripts:ro
-      - /dados/docker/persistent/zabbix/var/lib/export:/var/lib/zabbix/export:rw
-      - /dados/docker/persistent/zabbix/var/lib/modules:/var/lib/zabbix/modules:ro
-      - /dados/docker/persistent/zabbix/var/lib/enc:/var/lib/zabbix/enc:ro
-      - /dados/docker/persistent/zabbix/var/lib/ssh_keys:/var/lib/zabbix/ssh_keys:ro
-      - /dados/docker/persistent/zabbix/var/lib/mibs:/var/lib/zabbix/mibs:ro
-      - /dados/docker/persistent/zabbix/var/lib/snmptraps:/var/lib/zabbix/snmptraps:rw
     command:
       [
         "mysqld",
@@ -42,17 +33,34 @@ services:
       - mysql-server
     env_file:
       - "/dados/docker/environment/zabbix/sgbd/mysql.env"
+      - "/dados/docker/environment/zabbix/server/server.env"
     environment:
       - DB_SERVER_HOST=10.200.0.10
       - DB_SERVER_PORT=3306
     volumes:
+      - "/etc/localtime:/etc/localtime:ro"
       - "/dados/docker/environment/zabbix/server/alertscripts:/usr/lib/zabbix/alertscripts"
+      - /dados/docker/persistent/zabbix/usr/lib/alertscripts:/usr/lib/zabbix/alertscripts:ro
+      - /dados/docker/persistent/zabbix/usr/lib/externalscripts:/usr/lib/zabbix/externalscripts:ro
+      - /dados/docker/persistent/zabbix/var/lib/dbscripts:/var/lib/zabbix/dbscripts:ro
+      - /dados/docker/persistent/zabbix/var/lib/export:/var/lib/zabbix/export:rw
       - "/dados/docker/persistent/zabbix/server/module:/var/lib/zabbix/modules"
+      - /dados/docker/persistent/zabbix/var/lib/modules:/var/lib/zabbix/modules:ro
+      - /dados/docker/persistent/zabbix/var/lib/enc:/var/lib/zabbix/enc:ro
+      - /dados/docker/persistent/zabbix/var/lib/ssh_keys:/var/lib/zabbix/ssh_keys:ro
+      - /dados/docker/persistent/zabbix/var/lib/mibs:/var/lib/zabbix/mibs:ro
+      - /dados/docker/persistent/zabbix/var/lib/snmptraps:/var/lib/zabbix/snmptraps:rw
     network:
       network-chur:
         ipv4_address: 10.200.0.7
     ports:
       - "10051:10051"
+    labels:
+      com.zabbix.description: "Zabbix server with MySQL database support"
+      com.zabbix.company: "Zabbix LLC"
+      com.zabbix.component: "zabbix-server"
+      com.zabbix.dbtype: "mysql"
+      com.zabbix.os: "ubuntu"
 
   zabbix-frontend:
     container_name: zabbix-frontend
@@ -75,6 +83,35 @@ services:
     #volumes:
     #  - /dados/docker/environment/zabbix/frontend/ssl.key:/etc/ssl/apache2/ssl.key
     #  - /dados/docker/environment/zabbix/frontend/ssl.crt:/etc/ssl/apache2/ssl.crt
+  zabbix-snmptraps:
+    image: zabbix/zabbix-snmptraps:ubuntu-6.4-latest
+    profiles:
+      - full
+      - all
+    ports:
+      - "162:1162/udp"
+    volumes:
+      - /dados/docker/persistent/zabbix/var/lib/snmptraps:/var/lib/zabbix/   snmptraps:rw
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+        reservations:
+          cpus: "0.25"
+          memory: 128M
+    networks:
+      zbx_net_frontend:
+        aliases:
+          - zabbix-snmptraps
+      zbx_net_backend:
+    stop_grace_period: 5s
+    labels:
+      com.zabbix.description: "Zabbix snmptraps"
+      com.zabbix.company: "Zabbix LLC"
+      com.zabbix.component: "snmptraps"
+      com.zabbix.os: "ubuntu"
+
   grafana:
     container_name: grafana
     image: grafana/grafana

@@ -56,13 +56,15 @@ services:
       - DB_SERVER_HOST="10.200.0.10"
     depends_on:
       - mysql-server
-      - zabbix-mysql
     network:
       network-chur:
         ipv4_address: 10.200.0.8
     ports:
       - "8080:8080"
       - "8443:8443"
+    #volumes:
+    #  - /dados/docker/environment/zabbix/frontend/ssl.key:/etc/ssl/apache2/ssl.key
+    #  - /dados/docker/environment/zabbix/frontend/ssl.crt:/etc/ssl/apache2/ssl.crt
   grafana:
     container_name: grafana
     image: grafana/grafana

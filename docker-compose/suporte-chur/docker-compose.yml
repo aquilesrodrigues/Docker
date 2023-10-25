@@ -161,7 +161,11 @@ services:
     network:
       network-chur:
         ipv4_address: 10.200.0.11
-
+    labels:
+      com.grafana.description: "Grafana Dashboard"
+      com.grafana.company: "Grafana LLC"
+      com.grafana.component: "grafana"
+      com.grafana.os: "ubuntu"
 # ===================================================
 
 #  web:

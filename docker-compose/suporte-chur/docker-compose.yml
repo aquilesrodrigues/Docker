@@ -63,7 +63,7 @@ services:
 
   zabbix-web-nginx-mysql:
     container_name: zabbix-web-nginx-mysql
-    image: zabbix/zabbix-web-nginx-mysq:ubuntu-trunk
+    image: zabbix/zabbix-web-nginx-mysql:trunk-ubuntu
     restart: always
     pull_policy: always
     env_file:

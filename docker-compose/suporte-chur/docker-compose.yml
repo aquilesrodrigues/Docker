@@ -3,7 +3,7 @@ version: "3.8"
 services:
   mysql-server:
     container_name: mysql-server
-    image: mysql:8.0.34
+    image: mysql:8.0.35-debian
     restart: always
     env_file:
       - "/dados/docker/environment/mysql/sgbd/mysql.env"
@@ -63,14 +63,14 @@ services:
 
   zabbix-web-nginx-mysql:
     container_name: zabbix-web-nginx-mysql
-    image: zabbix/zabbix-web-nginx-mysql:trunk-ubuntu
+    image: zabbix/zabbix-web-nginx-mysql:ubuntu-trunk
     restart: always
     pull_policy: always
     env_file:
       - "/dados/docker/environment/zabbix/sgbd/mysql.env"
     environment:
-      - ZBX_SERVER_HOST="10.200.0.7"
-      - DB_SERVER_HOST="10.200.0.10"
+      - ZBX_SERVER_HOST=10.200.0.7
+      - DB_SERVER_HOST=mysql-server
     depends_on:
       - mysql-server
       - zabbix-server

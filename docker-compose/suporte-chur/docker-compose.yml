@@ -138,7 +138,7 @@ services:
       - ZBX_SERVER_HOST="zabbix-server,localhost"
     networks:
       network-chur:
-        ipv4_address: 10.200.0.12
+        ipv4_address: 10.200.0.4
     labels:
       com.zabbix.description: "Zabbix agent"
       com.zabbix.company: "Zabbix LLC"

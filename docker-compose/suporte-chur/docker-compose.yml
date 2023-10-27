@@ -119,7 +119,7 @@ services:
       com.zabbix.os: "ubuntu"
 
   zabbix-agent:
-    container_name: zabbix-agent
+    container_name: zabbix-agent2
     image: zabbix/zabbix-agent2
     user: root
     restart: always
@@ -135,7 +135,7 @@ services:
       - "/dados/docker/environment/zabbix/agent/agent.env"
     environment:
       - ZBX_HOSTNAME=Zabbix server
-      - ZBX_SERVER_HOST="10.200.0.7,localhost"
+      - ZBX_SERVER_HOST="zabbix-server,localhost"
     networks:
       network-chur:
         ipv4_address: 10.200.0.12

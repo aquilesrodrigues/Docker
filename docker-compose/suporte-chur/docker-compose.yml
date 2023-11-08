@@ -19,8 +19,7 @@ services:
       ]
       # ou substituir por este --collation-server=utf8mb4_bin
     networks:
-      network-chur:
-        ipv4_address: 10.200.0.10
+      - network-chur
     ports:
       - "3306:3306"
 
@@ -36,7 +35,7 @@ services:
       - "/dados/docker/environment/zabbix/sgbd/mysql.env"
       - "/dados/docker/environment/zabbix/server/server.env"
     environment:
-      - DB_SERVER_HOST=10.200.0.10
+      - DB_SERVER_HOST=172.20.0.10
       - DB_SERVER_PORT=3306
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
@@ -53,7 +52,7 @@ services:
       - "10051:10051"
     networks:
       network-chur:
-        ipv4_address: 10.200.0.7
+        ipv4_address: 172.20.0.7
     labels:
       com.zabbix.description: "Zabbix server with MySQL database support"
       com.zabbix.company: "Zabbix LLC"
@@ -68,9 +67,10 @@ services:
     pull_policy: always
     env_file:
       - "/dados/docker/environment/zabbix/sgbd/mysql.env"
+      # /etc/ssl/nginx
     environment:
-      - ZBX_SERVER_HOST="10.200.0.7"
-      - DB_SERVER_HOST="10.200.0.10"
+      - ZBX_SERVER_HOST="zabbix-server"
+      - DB_SERVER_HOST=172.20.0.10
     depends_on:
       - mysql-server
       - zabbix-server
@@ -83,7 +83,7 @@ services:
       - "8443:8443"
     networks:
       network-chur:
-        ipv4_address: 10.200.0.8
+        ipv4_address: 172.20.0.8
     labels:
       com.zabbix.description: "Zabbix frontend on Nginx web-server with  MySQL  database support"
       com.zabbix.company: "Zabbix LLC"
@@ -111,7 +111,7 @@ services:
           memory: 128M
     networks:
       network-chur:
-        ipv4_address: 10.200.0.5
+        ipv4_address: 172.20.0.5
     labels:
       com.zabbix.description: "Zabbix snmptraps"
       com.zabbix.company: "Zabbix LLC"
@@ -135,10 +135,10 @@ services:
       - "/dados/docker/environment/zabbix/agent/agent.env"
     environment:
       - ZBX_HOSTNAME=Zabbix server
-      - ZBX_SERVER_HOST="10.200.0.7,localhost"
+      - DB_SERVER_HOST=172.20.0.10
     networks:
       network-chur:
-        ipv4_address: 10.200.0.12
+        ipv4_address: 172.20.0.12
     labels:
       com.zabbix.description: "Zabbix agent"
       com.zabbix.company: "Zabbix LLC"
@@ -158,7 +158,7 @@ services:
       - zabbix-server
     networks:
       network-chur:
-        ipv4_address: 10.200.0.11
+        ipv4_address: 172.20.0.11
     labels:
       com.grafana.description: "Grafana Dashboard"
       com.grafana.company: "Grafana LLC"
@@ -207,5 +207,5 @@ networks:
     driver: bridge
     ipam:
       config:
-        - subnet: 10.200.0.0/24
-          gateway: 10.200.0.1
+        - subnet: 172.20.0.0/16
+        - ip-range: 172.20.240.0/20

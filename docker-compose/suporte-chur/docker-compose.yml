@@ -3,7 +3,7 @@ version: "3.8"
 services:
   mysql-server:
     container_name: mysql-server
-    image: mysql:8.0.34
+    image: mysql:8.0.35-debian
     restart: always
     env_file:
       - "/dados/docker/environment/mysql/sgbd/mysql.env"
@@ -62,7 +62,7 @@ services:
 
   zabbix-web-nginx-mysql:
     container_name: zabbix-web-nginx-mysql
-    image: zabbix/zabbix-web-nginx-mysql:trunk-ubuntu
+    image: zabbix/zabbix-web-nginx-mysql:ubuntu-trunk
     restart: always
     pull_policy: always
     env_file:
@@ -119,7 +119,7 @@ services:
       com.zabbix.os: "ubuntu"
 
   zabbix-agent:
-    container_name: zabbix-agent
+    container_name: zabbix-agent2
     image: zabbix/zabbix-agent2
     user: root
     restart: always
@@ -203,7 +203,7 @@ services:
 
 ############################################
 networks:
-  network-chur:
+  rede-chur:
     driver: bridge
     ipam:
       config:

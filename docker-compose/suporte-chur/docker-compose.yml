@@ -8,7 +8,9 @@ services:
     env_file:
       - "/dados/docker/environment/mysql/sgbd/mysql.env"
     volumes:
-      - "/dados/docker/persistent/mariadb/data:/var/lib/mysql:rw"
+      - "/dados/docker/persistent/mariadb/data:/var/lib/mysql/data/:rw"
+      - "/dados/docker/persistent/mariadb/logs:/var/lib/mysql/logs/"
+      - "/dados/docker/persistent/mariadb/conf.d:/etc/mysql/conf.d"
       - "/etc/localtime:/etc/localtime:ro"
       #     - dbsocket:/var/run/mysqld/
     command:

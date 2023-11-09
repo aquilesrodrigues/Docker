@@ -51,8 +51,7 @@ services:
     ports:
       - "10051:10051"
     networks:
-      network-chur:
-        ipv4_address: 172.20.0.7
+      - network-chur
     labels:
       com.zabbix.description: "Zabbix server with MySQL database support"
       com.zabbix.company: "Zabbix LLC"
@@ -82,8 +81,7 @@ services:
       - "8080:8080"
       - "8443:8443"
     networks:
-      network-chur:
-        ipv4_address: 172.20.0.8
+      - network-chur
     labels:
       com.zabbix.description: "Zabbix frontend on Nginx web-server with  MySQL  database support"
       com.zabbix.company: "Zabbix LLC"
@@ -110,8 +108,7 @@ services:
           cpus: "0.25"
           memory: 128M
     networks:
-      network-chur:
-        ipv4_address: 172.20.0.5
+      - network-chur
     labels:
       com.zabbix.description: "Zabbix snmptraps"
       com.zabbix.company: "Zabbix LLC"
@@ -137,8 +134,7 @@ services:
       - ZBX_HOSTNAME=Zabbix server
       - DB_SERVER_HOST=172.20.0.10
     networks:
-      network-chur:
-        ipv4_address: 172.20.0.12
+      - network-chur
     labels:
       com.zabbix.description: "Zabbix agent"
       com.zabbix.company: "Zabbix LLC"
@@ -157,8 +153,7 @@ services:
       - mysql-server
       - zabbix-server
     networks:
-      network-chur:
-        ipv4_address: 172.20.0.11
+      - network-chur
     labels:
       com.grafana.description: "Grafana Dashboard"
       com.grafana.company: "Grafana LLC"
@@ -203,7 +198,7 @@ services:
 
 ############################################
 networks:
-  rede-chur:
+  network-chur:
     driver: bridge
     ipam:
       config:

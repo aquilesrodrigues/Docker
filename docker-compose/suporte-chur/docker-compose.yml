@@ -1,14 +1,14 @@
 version: "3.8"
 
 services:
-  mysql-server:
-    container_name: mysql-server
-    image: mysql:8.0.35-debian
+  mariadb-server:
+    container_name: mariadb-server
+    image: mariadb:11.1.2-jammy
     restart: always
     env_file:
       - "/dados/docker/environment/mysql/sgbd/mysql.env"
     volumes:
-      - "/dados/docker/persistent/mysql/data:/var/lib/mysql:rw"
+      - "/dados/docker/persistent/mariadb/data:/var/lib/mysql:rw"
       - "/etc/localtime:/etc/localtime:ro"
       #     - dbsocket:/var/run/mysqld/
     command:
@@ -30,12 +30,12 @@ services:
     restart: always
     pull_policy: always
     depends_on:
-      - mysql-server
+      - mariadb-server
     env_file:
       - "/dados/docker/environment/zabbix/sgbd/mysql.env"
       - "/dados/docker/environment/zabbix/server/server.env"
     environment:
-      - DB_SERVER_HOST=mysql-server
+      - DB_SERVER_HOST=mariadb-server
       - DB_SERVER_PORT=3306
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
@@ -68,10 +68,10 @@ services:
       - "/dados/docker/environment/zabbix/sgbd/mysql.env"
       # /etc/ssl/nginx
     environment:
-      - ZBX_SERVER_HOST="zabbix-server"
-      - DB_SERVER_HOST=mysql-server
+      - ZBX_SERVER_HOST=zabbix-server
+      - DB_SERVER_HOST=mariadb-server
     depends_on:
-      - mysql-server
+      - mariadb-server
       - zabbix-server
     volumes:
       - /etc/localtime:/etc/localtime:ro
@@ -132,7 +132,7 @@ services:
       - "/dados/docker/environment/zabbix/agent/agent.env"
     environment:
       - ZBX_HOSTNAME=Zabbix server
-      - DB_SERVER_HOST=mysql-server
+      - DB_SERVER_HOST=mariadb-server
     networks:
       - network-chur
     labels:
@@ -150,7 +150,7 @@ services:
     environment:
       - GF_INSTALL_PLUGINS=alexanderzobnin-zabbix-app
     depends_on:
-      - mysql-server
+      - mariadb-server
       - zabbix-server
     networks:
       - network-chur
@@ -190,9 +190,9 @@ services:
 #    image: phpmyadmin:5.2.1-fpm
 #    container_name: phpmyadmin
 #    depends_on:
-#      - mysql-server
+#      - mariadb-server
 #    environment:
-#      - PMA_HOST = mysql-server
+#      - PMA_HOST = mariadb-server
 #    ports:
 #      - 8080:80
 

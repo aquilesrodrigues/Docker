@@ -118,6 +118,7 @@ services:
       - "162:1162/udp"
     volumes:
       - /dados/docker/persistent/zabbix/var/lib/snmptraps:/var/lib/zabbix/snmptraps:rw
+      - /dados/docker/persistent/zabbix/var/lib/mibs:/var/lib/zabbix/mibs:ro
     deploy:
       resources:
         limits:
@@ -144,6 +145,7 @@ services:
       - /var/run:/var/run
       - /dados/docker/persistent/zabbix/etc/zabbix_agentd.d:/etc/zabbix/zabbix_agentd.d:ro
       - /dados/docker/persistent/zabbix/var/lib/enc:/var/lib/zabbix/enc:ro
+      - /dados/docker/persistent/zabbix/var/lib/modules:/var/lib/zabbix/modules:rw
       - /dados/docker/persistent/zabbix/var/lib/ssh_keys:/var/lib/zabbix/ssh_keys:ro
     ports:
       - "10050:10050"
@@ -221,5 +223,5 @@ networks:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.20.0.0/16
-        - ip-range: 172.20.240.0/20
+        - subnet: "172.20.0.0/24"
+          gateway: "172.20.0.1"

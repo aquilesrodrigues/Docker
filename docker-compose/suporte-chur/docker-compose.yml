@@ -6,7 +6,7 @@ services:
     image: mariadb:11.1.2-jammy
     restart: always
     env_file:
-      - "/dados/docker/environment/mysql/sgbd/mysql.env"
+      - "/dados/docker/environment/mariadb/server.env"
     volumes:
       - "/dados/docker/persistent/mariadb/data:/var/lib/mysql/data/:rw"
       - "/dados/docker/persistent/mariadb/logs:/var/lib/mysql/logs/"
@@ -24,6 +24,23 @@ services:
       - network-chur
     ports:
       - "3306:3306"
+  ####### POSTGRES SERVER ##########
+  postgres-server:
+    container_name: postgres-server
+    image: postgres:13-bullseye
+    restart: unless-stopped
+    env_file:
+      - "/dados/docker/environment/postgresql/server.env"
+    volumes:
+      - "/dados/docker/persistent/postgresql/data:/var/lib/postgresql/data/:rw"
+      - "/dados/docker/persistent/postgresql/logs:/var/lib/postgresql/logs/"
+      - "/dados/docker/persistent/postgresql/conf.d:/etc/postgresql/conf.d"
+      - "/etc/localtime:/etc/localtime:ro"
+    networks:
+      - network-chur
+    ports:
+      - "5432:5432"
+
 
   ####### ZABBIX INFRA ##########
   zabbix-server:
@@ -34,7 +51,7 @@ services:
     depends_on:
       - mariadb-server
     env_file:
-      - "/dados/docker/environment/zabbix/sgbd/mysql.env"
+      - "/dados/docker/environment/zabbix/sgbd/tie-in.env"
       - "/dados/docker/environment/zabbix/server/server.env"
     environment:
       - DB_SERVER_HOST=mariadb-server
@@ -67,7 +84,7 @@ services:
     restart: always
     pull_policy: always
     env_file:
-      - "/dados/docker/environment/zabbix/sgbd/mysql.env"
+      - "/dados/docker/environment/zabbix/sgbd/tie-in.env"
       # /etc/ssl/nginx
     environment:
       - ZBX_SERVER_HOST=zabbix-server

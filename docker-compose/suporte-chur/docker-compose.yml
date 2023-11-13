@@ -24,7 +24,8 @@ services:
       - network-chur
     ports:
       - "3306:3306"
-  ####### POSTGRES SERVER ##########
+
+  ## POSTGRES SERVER #################################
   postgres-server:
     container_name: postgres-server
     image: postgres:13-bullseye
@@ -41,21 +42,18 @@ services:
     ports:
       - "5432:5432"
 
-
-  ####### ZABBIX INFRA ##########
+  ## ZABBIX INFRA #################################
+  #################################################
   zabbix-server:
     container_name: zabbix-server
     image: zabbix/zabbix-server-mysql
     restart: always
     pull_policy: always
     depends_on:
-      - mariadb-server
+      - postgres-server
     env_file:
       - "/dados/docker/environment/zabbix/sgbd/tie-in.env"
       - "/dados/docker/environment/zabbix/server/server.env"
-    environment:
-      - DB_SERVER_HOST=mariadb-server
-      - DB_SERVER_PORT=3306
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
       - /dados/docker/persistent/zabbix/usr/lib/alertscripts:/usr/lib/zabbix/alertscripts:ro
@@ -78,6 +76,8 @@ services:
       com.zabbix.dbtype: "mysql"
       com.zabbix.os: "ubuntu"
 
+  ## ZABBIX WEB #################################
+  #################################################
   zabbix-web-nginx-mysql:
     container_name: zabbix-web-nginx-mysql
     image: zabbix/zabbix-web-nginx-mysql:ubuntu-trunk
@@ -109,11 +109,11 @@ services:
       com.zabbix.dbtype: "mysql"
       com.zabbix.os: "ubuntu"
 
+  ## ZABBIX SNMP #################################
+  #################################################
   zabbix-snmptraps:
     image: zabbix/zabbix-snmptraps:ubuntu-6.4-latest
-    profiles:
-      - full
-      - all
+    restart: unless-stopped
     ports:
       - "162:1162/udp"
     volumes:

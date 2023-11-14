@@ -52,6 +52,7 @@ services:
     env_file:
       - "/dados/docker/environment/zabbix/sgbd/tie-in.env"
     volumes:
+      - "/dados/docker/persistent/postgresql/docker-entrypoint-initdb.d/init-multi-postgres-databases.sh:/docker-entrypoint-initdb.d/init-multi-postgres-databases.sh"
       - "/dados/docker/persistent/postgresql/data:/var/lib/postgresql/data/:rw"
       - "/dados/docker/persistent/postgresql/logs:/var/lib/postgresql/logs/"
       - "/dados/docker/persistent/postgresql/conf.d:/etc/postgresql/conf.d"

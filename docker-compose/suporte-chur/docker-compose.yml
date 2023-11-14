@@ -44,6 +44,21 @@ services:
 
   ## ZABBIX INFRA #################################
   #################################################
+
+  ## POSTGRES SERVER #################################
+  zabbix-postgres:
+    container_name: zabbix-postgres
+    image: postgres:13-bullseye
+    env_file:
+      - "/dados/docker/environment/zabbix/sgbd/tie-in.env"
+    volumes:
+      - "/dados/docker/persistent/postgresql/data:/var/lib/postgresql/data/:rw"
+      - "/dados/docker/persistent/postgresql/logs:/var/lib/postgresql/logs/"
+      - "/dados/docker/persistent/postgresql/conf.d:/etc/postgresql/conf.d"
+      - "/etc/localtime:/etc/localtime:ro"
+    networks:
+      - network-chur
+
   zabbix-server:
     container_name: zabbix-server
     image: zabbix/zabbix-server-mysql

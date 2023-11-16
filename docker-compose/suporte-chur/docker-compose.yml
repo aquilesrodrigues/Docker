@@ -31,8 +31,9 @@ services:
     image: postgres:13-bullseye
     restart: unless-stopped
     env_file:
-      - "/dados/docker/environment/postgresql/server.env"
+      - "/dados/docker/environment/postgresql/tie-in.env"
     volumes:
+      - "/dados/docker/persistent/postgresql/conf.d/:/etc/postgresql/conf.d"
       - "/dados/docker/persistent/postgresql/data:/var/lib/postgresql/data/:rw"
       - "/dados/docker/persistent/postgresql/logs:/var/lib/postgresql/logs/"
       - "/dados/docker/persistent/postgresql/conf.d:/etc/postgresql/conf.d"

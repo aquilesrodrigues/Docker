@@ -29,7 +29,7 @@ services:
   postgres-server:
     container_name: postgres-server
     image: postgres:13-bullseye
-    restart: unless-stopped
+    restart: always
     env_file:
       - "/dados/docker/environment/postgresql/tie-in.env"
     command: sh -c "localedef -i pt_BR -c -f UTF-8 -A /usr/share/locale/locale.alias pt_BR.UTF-8"

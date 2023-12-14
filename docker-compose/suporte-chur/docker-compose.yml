@@ -32,6 +32,7 @@ services:
     restart: unless-stopped
     env_file:
       - "/dados/docker/environment/postgresql/tie-in.env"
+    RUN: localedef -i pt_BR -c -f UTF-8 -A /usr/share/locale/locale.alias pt_BR.UTF-8
     volumes:
     
       # - "/dados/docker/environment/postgresql/conf.d/multiple-db.sh:/etc/postgresql/conf.d/multiple-db.sh"

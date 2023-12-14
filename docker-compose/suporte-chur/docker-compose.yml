@@ -30,6 +30,10 @@ services:
     container_name: postgres-server
     image: postgres:13-bullseye
     restart: always
+    logging:
+          options:
+            max-size: 10m
+            max-file: "3"
     env_file:
       - "/dados/docker/environment/postgresql/tie-in.env"
     command: sh -c "localedef -i pt_BR -c -f UTF-8 -A /usr/share/locale/locale.alias pt_BR.UTF-8"

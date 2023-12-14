@@ -28,7 +28,7 @@ services:
   ## POSTGRES SERVER #################################
   postgres-server:
     container_name: postgres-server
-    image: postgres:13-bullseye
+    image: postgres:13
     restart: always
     logging:
           options:

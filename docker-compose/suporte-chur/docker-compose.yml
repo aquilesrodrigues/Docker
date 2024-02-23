@@ -73,6 +73,7 @@ services:
         volumes:
             - "/dados/docker/persistent/mariadb/bancos:/var/lib/mysql"
             - "/dados/docker/environment/mariadb/conf.d:/etc/mysql/conf.d"
+            - "/dados/docker/environment/mariadb/my.cnf:/etc/mysql/my.cnf"
             - "/etc/localtime:/etc/localtime:ro"
         env_file:
             - "/dados/docker/environment/mariadb/tie-in.env"

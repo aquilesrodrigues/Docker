@@ -43,13 +43,14 @@ services:
     php:
         build: "/dados/docker/environment/php/"
         restart: always
-        container_name: php7_compose
+        container_name: php8_compose
         networks:
             - rede-chur
         expose:
             - 9000
         volumes:
             - "/dados/docker/persistent/php/html:/var/www/html"
+            
 
 ###########################
 # Container de teste

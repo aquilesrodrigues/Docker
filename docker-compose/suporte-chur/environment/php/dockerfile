@@ -23,9 +23,14 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN set -eux; \
     apt-get update; \
     apt-get upgrade -y; \
-    apt-get install -y --no-install-recommends \
+    apt-get install -y libmagickwand-dev --no-install-recommends \
+            unzip \
             curl \
             zip \
+            apt-transport-https \
+            ca-certificates \
+            wget \
+            libcurl4-openssl-dev \
             libmemcached-dev \
             libz-dev \
             libpq-dev \
@@ -36,42 +41,46 @@ RUN set -eux; \
             libwebp-dev \
             libxpm-dev \
             libmcrypt-dev \
-            libjpeg62-turbo-dev \
-            zlib1g-dev \
-            libzip-dev \
-            libxml2-dev \
-            libcurl3-dev \
             libonig-dev; \
     rm -rf /var/lib/apt/lists/*
-
+ 
 RUN set -eux; \
-    apt-get install -y libmagickwand-dev; \
-    pecl install imagick
-
+    mkdir -p /usr/src/php/ext/imagick; \
+    curl -fsSL https://github.com/Imagick/imagick/archive/06116aa24b76edaf6b1693198f79e6c295eda8a9.tar.gz | tar xvz -C "/usr/src/php/ext/imagick" --strip 1; \
+    docker-php-ext-install imagick;
+RUN set -eux; \
+    mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini";
 
 RUN set -eux; \
     # Install the PHP pdo_mysql extention
     docker-php-ext-install pdo_mysql; \
+    # Install the PHP mysqli extention
+    docker-php-ext-install mysqli; \
     # Install the PHP pdo_pgsql extention
     docker-php-ext-install pdo_pgsql; \
-    # Install the PHP other extention
-    docker-php-ext-install mysqli; \ 
-    docker-php-ext-install pdo; \
-    docker-php-ext-install curl; \
-    docker-php-ext-install mbstring; \
-    docker-php-ext-install xml; \
-    docker-php-ext-install json; \
     # Install the PHP gd library
     docker-php-ext-configure gd \
             --prefix=/usr \
             --with-jpeg \
             --with-webp \
             --with-xpm \
-            --with-png \
-            --with-zlib \
             --with-freetype; \
-    docker-php-ext-install gd; \
-    docker-php-ext-enable imagick mysqli pdo_mysql; \
-    php -r 'var_dump(gd_info());'
+    docker-php-ext-install gd;
+
+# Configure additional PHP modules
+RUN set -eux; \
+    docker-php-ext-enable imagick; \
+    docker-php-ext-enable  mysqli; \
+    docker-php-ext-enable  pdo_mysql;
+
+# Clean variable enviroment 
+RUN set -eux; \
+    apt-get purge -y libmagickwand-dev
+
+# Install Composer so it's available
+RUN set - eux; \
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# CMD [ "php", "/var/www/html/index.php" ]
 
 EXPOSE 9000

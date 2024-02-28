@@ -53,14 +53,7 @@ services:
     volumes:
       - "/dados/docker/persistent/php/html:/var/www/html"
       - "/dados/docker/environment/php/php-logging.conf:/usr/local/etc/php-fpm.d/zz-log.conf"
-  ###########################
-  # Container de teste
-  ###########################
-  testing:
-    build: "/dados/docker/environment/php/"
-    volumes_from:
-      - php
-
+  #
   ###########################
   # Container de banco de dados (MySQL)
   ###########################

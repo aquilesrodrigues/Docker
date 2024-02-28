@@ -1,86 +1,87 @@
 # Utilizando sintax da versão 2:
 #   https://docs.docker.com/compose/compose-file/#/versioning
-version: '3'
+version: "3"
 
 services:
-###########################
-# Container Web (Nginx)
-###########################
-    nginx:
-        image: nginx:latest
-        container_name: nginx_compose
-        restart: always
-        depends_on:
-            - php
-        networks:
-            - rede-chur
-#        extra_hosts:
-#            - "gitlab.chur.com.br:10.0.1.11"
-#            - "chur.com.br:10.0.1.10"            
-        ports:
-            - 8080:80
-        volumes:
-            # PASTAS PARA NGINX
-            - "/dados/docker/environment/nginx/ssl:/etc/nginx/ssl"
-            - "/dados/docker/environment/nginx/sites-enabled:/etc/nginx/sites-enabled"
-            # PASTA HTML_PHP ENTRE CONTAINERS              
-            - "/dados/docker/environment/nginx/php-fpm/default.conf:/etc/nginx/conf.d/default.conf"
-            # - "/dados/docker/environment/nginx/conf.d:/etc/nginx/conf.d"
-            - "/dados/docker/persistent/nginx/root:/root"
-            - "/dados/docker/persistent/nginx/NGINX_cache:/tmp/NGINX_cache"
-            - "/dados/docker/persistent/nginx/logs:/var/log/nginx"
-             # PASTA PUBLICA ENTRE CONTAINERS            
-            - "/var/docker/public:/public"
-            - "/etc/localtime:/etc/localtime:ro"
-            #- "/var/run/docker.sock:/tmp/docker.sock:ro"
+  ###########################
+  # Container Web (Nginx)
+  ###########################
+  nginx:
+    image: nginx:latest
+    container_name: nginx_compose
+    restart: always
+    depends_on:
+      - php
+    networks:
+      - rede-chur
+    #        extra_hosts:
+    #            - "gitlab.chur.com.br:10.0.1.11"
+    #            - "chur.com.br:10.0.1.10"
+    ports:
+      - 8080:80
+    volumes:
+      # PASTAS PARA NGINX
+      - "/dados/docker/environment/nginx/ssl:/etc/nginx/ssl"
+      - "/dados/docker/environment/nginx/sites-enabled:/etc/nginx/sites-enabled"
+      # PASTA HTML_PHP ENTRE CONTAINERS
+      - "/dados/docker/environment/nginx/php-fpm/default.conf:/etc/nginx/conf.d/default.conf"
+      # - "/dados/docker/environment/nginx/conf.d:/etc/nginx/conf.d"
+      - "/dados/docker/persistent/nginx/root:/root"
+      - "/dados/docker/persistent/nginx/NGINX_cache:/tmp/NGINX_cache"
+      - "/dados/docker/persistent/nginx/logs:/var/log/nginx"
+        # PASTA PUBLICA ENTRE CONTAINERS
+      - "/var/docker/public:/public"
+      - "/etc/localtime:/etc/localtime:ro"
+      #- "/var/run/docker.sock:/tmp/docker.sock:ro"
+    environment:
+      #            - NGINX_HOST=xpaco.com.br
+      - NGINX_PORT=80
+    volumes_from:
+      - php
 
-        volumes_from:
-            - php
+  ###########################
+  # Container PHP
+  ###########################
+  php:
+    build: "/dados/docker/environment/php/"
+    restart: always
+    container_name: php8_compose
+    networks:
+      - rede-chur
+    expose:
+      - 9000
+    volumes:
+      - "/dados/docker/persistent/php/html:/var/www/html"
 
-###########################
-# Container PHP
-###########################
-    php:
-        build: "/dados/docker/environment/php/"
-        restart: always
-        container_name: php8_compose
-        networks:
-            - rede-chur
-        expose:
-            - 9000
-        volumes:
-            - "/dados/docker/persistent/php/html:/var/www/html"
-            
+  ###########################
+  # Container de teste
+  ###########################
+  testing:
+    build: "/dados/docker/environment/php/"
+    volumes_from:
+      - php
 
-###########################
-# Container de teste
-###########################
-    testing:
-        build: "/dados/docker/environment/php/"
-        volumes_from:
-            - php
-
-###########################
-# Container de banco de dados (MySQL)
-###########################
-    mariadb:
-        image: mariadb:10.0
-        container_name: mariadb_compose
-        restart: always
-        networks:
-            - rede-chur
-        ports:
-            - "3306:3306"
-        volumes:
-            - "/dados/docker/persistent/mariadb/bancos:/var/lib/mysql"
-            - "/dados/docker/environment/mariadb/conf.d:/etc/mysql/conf.d"
-            - "/dados/docker/environment/mariadb/my.cnf:/etc/mysql/my.cnf"
-            - "/etc/localtime:/etc/localtime:ro"
-        env_file:
-            - "/dados/docker/environment/mariadb/tie-in.env"
+  ###########################
+  # Container de banco de dados (MySQL)
+  ###########################
+  mariadb:
+    image: mariadb:10.0
+    container_name: mariadb_compose
+    restart: always
+    networks:
+      - rede-chur
+    ports:
+      - "3306:3306"
+    volumes:
+      - "/dados/docker/persistent/mariadb/bancos:/var/lib/mysql"
+      - "/dados/docker/environment/mariadb/conf.d:/etc/mysql/conf.d"
+      - "/dados/docker/environment/mariadb/my.cnf:/etc/mysql/my.cnf"
+      - "/etc/localtime:/etc/localtime:ro"
+    env_file:
+      - "/dados/docker/environment/mariadb/tie-in.env"
 
 networks:
-    rede-chur:
-        driver: bridge
-        ipam:
-          driver: default
+  rede-chur:
+    driver: bridge
+    ipam:
+      driver: default

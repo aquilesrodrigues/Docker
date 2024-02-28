@@ -52,7 +52,7 @@ services:
       - 9000
     volumes:
       - "/dados/docker/persistent/php/html:/var/www/html"
-
+      - "/dados/docker/environment/php/php-logging.conf:/usr/local/etc/php-fpm.d/zz-log.conf"
   ###########################
   # Container de teste
   ###########################

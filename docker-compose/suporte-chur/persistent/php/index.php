@@ -33,7 +33,6 @@ if ($conn->connect_error) {
     echo "<br>";
 }
 
-
 /*
 
 echo "Teste do Banco de Dados Postgres";

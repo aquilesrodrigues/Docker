@@ -1,29 +1,6 @@
 version: "3.8"
 
 services:
-  # mariadb-server:
-  #   container_name: mariadb-server
-  #   image: mariadb:11.1.2-jammy
-  #   restart: always
-  #   env_file:
-  #     - "/dados/docker/environment/mariadb/server.env"
-  #   volumes:
-  #     - "/dados/docker/persistent/mariadb/data:/var/lib/mysql/data/:rw"
-  #     - "/dados/docker/persistent/mariadb/logs:/var/lib/mysql/logs/"
-  #     - "/dados/docker/persistent/mariadb/conf.d:/etc/mysql/conf.d"
-  #     - "/etc/localtime:/etc/localtime:ro"
-  #     #     - dbsocket:/var/run/mysqld/
-  #   command:
-  #     [
-  #       "mysqld",
-  #       "--character-set-server=utf8mb4",
-  #       "--collation-server=utf8mb4_unicode_ci",
-  #     ]
-  #     # ou substituir por este --collation-server=utf8mb4_bin
-  #   networks:
-  #     - network-chur
-  #   ports:
-  #     - "3306:3306"
 
   ## POSTGRES SERVER #################################
   postgres-server:
@@ -204,41 +181,6 @@ services:
   #     com.grafana.component: "grafana"
   #     com.grafana.os: "ubuntu"
 # ===================================================
-
-#  web:
-#    image: nginx:latest
-#    container_name: nginx-php
-#    networks:
-#      - network-chur
-#    depends_on:
-#      - php
-#    ports:
-#      - "80:80"
-#    volumes:
-#      - "/dados/docker/environment/nginx/docker.sock:/tmp/docker.sock:ro"
-#      - "/dados/docker/environment/nginx/php-fpm/default.conf:/etc/nginx/conf.d/default.conf"
-#      - "/dados/docker/persistent/www/html:/var/www/html"
-#  php:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    image: php-fpm
-#    restart: always
-#    container_name: php-fpm
-#    networks:
-#      - network-chur
-#    volumes:
-#      - "/dados/docker/persistent/www/html:/var/www/html"
-
-#  myadmin:
-#    image: phpmyadmin:5.2.1-fpm
-#    container_name: phpmyadmin
-#    depends_on:
-#      - mariadb-server
-#    environment:
-#      - PMA_HOST = mariadb-server
-#    ports:
-#      - 8080:80
 
 ############################################
 networks:

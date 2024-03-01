@@ -12,7 +12,7 @@ services:
     container_name: nginx-reverse_compose
     restart: always
     depends_on:
-      - php
+      - php-fpm
     networks:
       - rede-chur
     #        extra_hosts:

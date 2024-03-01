@@ -3,9 +3,9 @@
 version: "3"
 
 services:
-  ###########################
-  # Container Web (Nginx)
-  ###########################
+  ###################################
+  # Container proxy-reverse (Nginx)
+  ###################################
   nginx-reverso:
     image: nginx:latest
     hostname: nginx-reverso

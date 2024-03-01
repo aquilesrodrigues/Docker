@@ -35,7 +35,7 @@ services:
         # PASTA PUBLICA ENTRE CONTAINERS
       - "docker-public:/public"
         # SINCRONIZA TIME
-      - "local-time:/etc/localtime:ro"
+      - "/etc/localtime:/etc/localtime:ro"
       #- "/var/run/docker.sock:/tmp/docker.sock:ro"
     environment:
       # - NGINX_HOST=xpaco.com.br
@@ -58,7 +58,7 @@ services:
     volumes:
       - "php-sites:/var/www/html"
       - "/dados/docker/environment/php/php-logging.conf:/usr/local/etc/php-fpm.d/zz-log.conf"
-      - "local-time:/etc/localtime:ro"
+      - "/etc/localtime:/etc/localtime:ro"
   #
   ###########################
   # Container de banco de dados (MySQL)
@@ -78,7 +78,7 @@ services:
       # Ambiente
       - "mariadb-conf-d:/etc/mysql/conf.d"
       - "/dados/docker/environment/mariadb/my.cnf:/etc/mysql/my.cnf"
-      - "local-time:/etc/localtime:ro"
+      - "/etc/localtime:/etc/localtime:ro"
       #     - dbsocket:/var/run/mysqld/
     env_file:
       - "/dados/docker/environment/mariadb/tie-in.env"
@@ -120,12 +120,6 @@ volumes:
       type: 'none'
       o: 'bind'
       device: /var/docker/public
-  local-time:
-    driver: local
-    driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: '/etc/localtime'
     
 networks:
   rede-chur:

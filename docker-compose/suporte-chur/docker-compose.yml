@@ -56,7 +56,7 @@ services:
     expose:
       - 9000
     volumes:
-      - "/dados/docker/persistent/php/html:/var/www/html"
+      - "php-sites:/var/www/html"
       - "/dados/docker/environment/php/php-logging.conf:/usr/local/etc/php-fpm.d/zz-log.conf"
       - "local-time:/etc/localtime:ro"
   #
@@ -84,6 +84,12 @@ services:
       - "/dados/docker/environment/mariadb/tie-in.env"
 
 volumes:
+  php-sites:
+    driver: 'local'
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/dados/docker/persistent/php/html'
   mariadb-database:
     driver: local
     driver_opts:

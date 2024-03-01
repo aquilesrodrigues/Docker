@@ -101,7 +101,7 @@ volumes:
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '/dados/docker/environment/nginx/'
+      device: '/dados/docker/persistent/nginx/'
   certificate-ssl:
     driver: local
     driver_opts:

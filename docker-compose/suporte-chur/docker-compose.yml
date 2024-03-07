@@ -88,6 +88,32 @@ services:
     env_file:
       - "/dados/docker/environment/mariadb/tie-in.env"
 
+ ## POSTGRES SERVER #################################
+  postgres-server:
+    hostname: postgres-server
+    container_name: postgres-server_compose
+    image: postgres:13
+    restart: always
+    logging:
+          options:
+            max-size: 10m
+            max-file: "3"
+    env_file:
+      - "/dados/docker/environment/postgresql/tie-in.env"
+    command: sh -c "localedef -i pt_BR -c -f UTF-8 -A /usr/share/locale/locale.alias pt_BR.UTF-8"
+    volumes:
+    
+      # - "/dados/docker/environment/postgresql/conf.d/multiple-db.sh:/etc/postgresql/conf.d/multiple-db.sh"
+      - "/dados/docker/persistent/postgresql/data:/var/lib/postgresql/data/:rw"
+      - "/dados/docker/persistent/postgresql/logs:/var/lib/postgresql/logs/"
+      - "/dados/docker/persistent/postgresql/conf.d:/etc/postgresql/conf.d"
+      - "/etc/localtime:/etc/localtime:ro"
+    networks:
+      - network-chur
+    ports:
+      - "5432:5432"
+
+
 volumes:
 # CONFIGURACAO AMBIENTE
   mariadb-conf-d:

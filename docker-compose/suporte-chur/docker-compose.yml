@@ -7,9 +7,8 @@ services:
   # Container proxy-reverse (Nginx)
   ###################################
   nginx-reverse:
-    image: jwilder/nginx-proxy
-    #nginx:latest
-    
+    image: nginx:latest
+    # jwilder/nginx-proxy
     hostname: nginx-reverse
     container_name: nginx-reverse_compose
     restart: always
@@ -40,10 +39,10 @@ services:
         # PASTA PUBLICA ENTRE CONTAINERS
       - "/var/docker/public:/public"
       - "/etc/localtime:/etc/localtime:ro"
-      # --> jwilder/nginx-proxy ==
-      - "/var/run/docker.sock:/tmp/docker.sock:ro"
       # --> nginx:latest ==
-      # - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      # --> jwilder/nginx-proxy ==
+      #- "/var/run/docker.sock:/tmp/docker.sock:ro"
       
     environment:
       #            - NGINX_HOST=xpaco.com.br

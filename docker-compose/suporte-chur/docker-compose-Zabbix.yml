@@ -4,6 +4,7 @@ services:
 
   ## POSTGRES SERVER #################################
   postgres-server:
+    hostname: postgres-server
     container_name: postgres-server
     image: postgres:13
     restart: always

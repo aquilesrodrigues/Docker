@@ -64,9 +64,24 @@ services:
       - "php-sites:/var/www/html"
       - "/dados/docker/environment/php/php-logging.conf:/usr/local/etc/php-fpm.d/zz-log.conf"
       - "/etc/localtime:/etc/localtime:ro"
+
+  ###########################
+  # Container   guacd
+  ###########################
+  guacd:
+    container_name: guacd_compose
+    image: guacamole/guacd
+    networks:
+      guacnetwork_compose:
+    restart: always
+    volumes:
+    - ./drive:/drive:rw
+    - ./record:/record:rw
+
+      
   #
   ###########################
-  # Container de banco de dados (MySQL)
+  # Containers de banco de dados (MySQL)
   ###########################
   mariadb:
     image: mariadb:10.0
@@ -89,27 +104,26 @@ services:
       - "/dados/docker/environment/mariadb/tie-in.env"
 
  ## POSTGRES SERVER #################################
-  postgres-server:
-    hostname: postgres-server
-    container_name: postgres-server_compose
+  postgresql:
+    hostname: postgresql
+    container_name: postgresql_compose
     image: postgres:13
     restart: always
     logging:
           options:
             max-size: 10m
             max-file: "3"
+    # command: sh -c "localedef -i pt_BR -c -f UTF-8 -A /usr/share/locale/locale.alias pt_BR.UTF-8"
     env_file:
       - "/dados/docker/environment/postgresql/tie-in.env"
-    command: sh -c "localedef -i pt_BR -c -f UTF-8 -A /usr/share/locale/locale.alias pt_BR.UTF-8"
     volumes:
-    
+      - "postgres-conf-d:/etc/postgresql/conf.d"
       # - "/dados/docker/environment/postgresql/conf.d/multiple-db.sh:/etc/postgresql/conf.d/multiple-db.sh"
-      - "/dados/docker/persistent/postgresql/data:/var/lib/postgresql/data/:rw"
-      - "/dados/docker/persistent/postgresql/logs:/var/lib/postgresql/logs/"
-      - "/dados/docker/persistent/postgresql/conf.d:/etc/postgresql/conf.d"
+      - "postgresql-database:/var/lib/postgresql/data/:rw"
+      - "postgresql-logs:/var/lib/postgresql/logs/"
       - "/etc/localtime:/etc/localtime:ro"
     networks:
-      - network-chur
+      - rede-chur
     ports:
       - "5432:5432"
 
@@ -117,25 +131,31 @@ services:
 volumes:
 # CONFIGURACAO AMBIENTE
   mariadb-conf-d:
-    driver: local
+    driver: 'local'
     driver_opts:
       type: 'none'
       o: 'bind'
       device: '/dados/docker/environment/mariadb/conf.d'
+  postgres-conf-d:
+    driver: 'local'
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/dados/docker/environment/postgresql/conf.d'
   certificate-ssl:
-    driver: local
+    driver: 'local'
     driver_opts:
       type: 'none'
       o: 'bind'
       device: '/dados/docker/environment/ssl'
   nginx-reverse_sites-enabled:
-    driver: local
+    driver: 'local'
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: "/dados/docker/environment/nginx/sites-enabled"
+      device: '/dados/docker/environment/nginx/sites-enabled'
   nginx-reverse_conf.d:
-    driver: local
+    driver: 'local'
     driver_opts:
       type: 'none'
       o: 'bind'
@@ -148,32 +168,44 @@ volumes:
       o: 'bind'
       device: '/dados/docker/persistent/php/html'
   mariadb-database:
-    driver: local
+    driver: 'local'
     driver_opts:
       type: 'none'
       o: 'bind'
       device: '/dados/docker/persistent/mariadb/database'
+  postgresql-database:
+    driver: 'local'
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/dados/docker/persistent/postgresql/data'
+  postgresql-logs:
+    driver: 'local'
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/dados/docker/persistent/postgresql/logs'       
   nginx-reverse_root:
-    driver: local
+    driver: 'local'
     driver_opts:
       type: 'none'
       o: 'bind'
       device: "/dados/docker/persistent/nginx/root"
   nginx-reverse_NGINX_cache:
-    driver: local
+    driver: 'local'
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: "/dados/docker/persistent/nginx/NGINX_cache"
+      device: '/dados/docker/persistent/nginx/NGINX_cache'
   nginx-reverse_logs:
-    driver: local
+    driver: 'local'
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: "/dados/docker/persistent/nginx/logs"      
+      device: '/dados/docker/persistent/nginx/logs'      
 
   docker-public:
-    driver: local
+    driver: 'local'
     driver_opts:
       type: 'none'
       o: 'bind'

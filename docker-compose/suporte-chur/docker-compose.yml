@@ -1,4 +1,4 @@
-# Utilizando sintax da versão 2:
+# Utilizando sintax da versão 3:
 #   https://docs.docker.com/compose/compose-file/#/versioning
 version: "3"
 
@@ -68,15 +68,15 @@ services:
   ###########################
   # Container   guacd
   ###########################
-  guacd:
-    container_name: guacd_compose
-    image: guacamole/guacd
-    networks:
-      guacnetwork_compose:
-    restart: always
-    volumes:
-    - ./drive:/drive:rw
-    - ./record:/record:rw
+  #guacd:
+  #  container_name: guacd_compose
+  #  image: guacamole/guacd
+  #  networks:
+  #    guacnetwork_compose:
+  #  restart: always
+  #  volumes:
+  #  - ./drive:/drive:rw
+  #  - ./record:/record:rw
 
       
   #
@@ -94,7 +94,7 @@ services:
       - "3306:3306"
     volumes:
       # Persistente
-      - "mysql-database:/var/lib/mysql"
+      - "mysql-data:/var/lib/mysql"
       # Ambiente
       - "mysql-conf-d:/etc/mysql/conf.d"
       - "/dados/docker/environment/mysql/my.cnf:/etc/mysql/my.cnf"
@@ -119,7 +119,7 @@ services:
     volumes:
       - "postgres-conf-d:/etc/postgresql/conf.d"
       # - "/dados/docker/environment/postgresql/conf.d/multiple-db.sh:/etc/postgresql/conf.d/multiple-db.sh"
-      - "postgresql-database:/var/lib/postgresql/data/:rw"
+      - "postgresql-data:/var/lib/postgresql/data/:rw"
       - "postgresql-logs:/var/lib/postgresql/logs/"
       - "/etc/localtime:/etc/localtime:ro"
     networks:
@@ -167,13 +167,13 @@ volumes:
       type: 'none'
       o: 'bind'
       device: '/dados/docker/persistent/php/html'
-  mysql-database:
+  mysql-data:
     driver: 'local'
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '/dados/docker/persistent/mysql/database'
-  postgresql-database:
+      device: '/dados/docker/persistent/mysql/data'
+  postgresql-data:
     driver: 'local'
     driver_opts:
       type: 'none'

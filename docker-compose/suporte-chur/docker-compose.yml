@@ -83,10 +83,10 @@ services:
   ###########################
   # Containers de banco de dados (MySQL)
   ###########################
-  mariadb:
-    image: mariadb:10.0
-    hostname: mariadb
-    container_name: mariadb_compose
+  mysql:
+    image: mysql:latest
+    hostname: mysql
+    container_name: mysql_compose
     restart: always
     networks:
       - rede-chur
@@ -94,14 +94,14 @@ services:
       - "3306:3306"
     volumes:
       # Persistente
-      - "mariadb-database:/var/lib/mysql"
+      - "mysql-database:/var/lib/mysql"
       # Ambiente
-      - "mariadb-conf-d:/etc/mysql/conf.d"
-      - "/dados/docker/environment/mariadb/my.cnf:/etc/mysql/my.cnf"
+      - "mysql-conf-d:/etc/mysql/conf.d"
+      - "/dados/docker/environment/mysql/my.cnf:/etc/mysql/my.cnf"
       - "/etc/localtime:/etc/localtime:ro"
       #     - dbsocket:/var/run/mysqld/
     env_file:
-      - "/dados/docker/environment/mariadb/tie-in.env"
+      - "/dados/docker/environment/mysql/tie-in.env"
 
  ## POSTGRES SERVER #################################
   postgresql:
@@ -130,12 +130,12 @@ services:
 
 volumes:
 # CONFIGURACAO AMBIENTE
-  mariadb-conf-d:
+  mysql-conf-d:
     driver: 'local'
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '/dados/docker/environment/mariadb/conf.d'
+      device: '/dados/docker/environment/mysql/conf.d'
   postgres-conf-d:
     driver: 'local'
     driver_opts:
@@ -167,12 +167,12 @@ volumes:
       type: 'none'
       o: 'bind'
       device: '/dados/docker/persistent/php/html'
-  mariadb-database:
+  mysql-database:
     driver: 'local'
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '/dados/docker/persistent/mariadb/database'
+      device: '/dados/docker/persistent/mysql/database'
   postgresql-database:
     driver: 'local'
     driver_opts:

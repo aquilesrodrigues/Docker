@@ -24,6 +24,7 @@ tmpdir      = /tmp
 language   = /usr/share/mysql/english
 skip-locking
 
+bind-address = 0.0.0.0
 # key-buffer define quanto de memória será armazenado para
 # gravar dados de consultas do MySQL. Quanto maior a quantidade
 # de memória disponível, melhor será o desempenho do servidor

@@ -1,6 +1,6 @@
 # Utilizando sintax da versão 3:
 #   https://docs.docker.com/compose/compose-file/#/versioning
-version: "3"
+version: "3.8"
 
 services:
   ###################################
@@ -28,7 +28,7 @@ services:
       - "php-sites:/var/www/html"
       - "nginx-reverse_sites-enabled:/etc/nginx/sites-enabled"
       - "nginx-reverse_root:/root"
-      - "nginx-reverse_NGINX_cache:/tmp/NGINX_cache"
+      - "nginx-reverse_nginx_cache:/tmp/NGINX_cache"
       - "nginx-reverse_logs:/var/log/nginx"
       # - "nginx-reverse_conf.d:/etc/nginx/conf.d"
       # PASTA HTML_PHP ENTRE CONTAINERS
@@ -43,7 +43,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       # --> jwilder/nginx-proxy ==
       #- "/var/run/docker.sock:/tmp/docker.sock:ro"
-      
+
     environment:
       #            - NGINX_HOST=xpaco.com.br
       - NGINX_PORT=80
@@ -78,7 +78,6 @@ services:
   #  - ./drive:/drive:rw
   #  - ./record:/record:rw
 
-      
   #
   ###########################
   # Containers de banco de dados (MySQL)
@@ -103,114 +102,113 @@ services:
     env_file:
       - "/dados/docker/environment/mysql/tie-in.env"
 
- ## POSTGRES SERVER #################################
-  postgresql:
-    hostname: postgresql
-    container_name: postgresql_compose
-    image: postgres:13
-    restart: always
-    logging:
-          options:
-            max-size: 10m
-            max-file: "3"
-    # command: sh -c "localedef -i pt_BR -c -f UTF-8 -A /usr/share/locale/locale.alias pt_BR.UTF-8"
-    env_file:
-      - "/dados/docker/environment/postgresql/tie-in.env"
-    volumes:
-      - "postgres-conf-d:/etc/postgresql/conf.d"
-      # - "/dados/docker/environment/postgresql/conf.d/multiple-db.sh:/etc/postgresql/conf.d/multiple-db.sh"
-      - "postgresql-data:/var/lib/postgresql/data/:rw"
-      - "postgresql-logs:/var/lib/postgresql/logs/"
-      - "/etc/localtime:/etc/localtime:ro"
-    networks:
-      - rede-chur
-    ports:
-      - "5432:5432"
-
+  ## POSTGRES SERVER #################################
+#  postgresql:
+#    hostname: postgresql
+#    container_name: postgresql_compose
+#    image: postgres:13
+#    restart: always
+#    logging:
+#      options:
+#        max-size: 10m
+#        max-file: "3"
+#    # command: sh -c "localedef -i pt_BR -c -f UTF-8 -A /usr/share/locale/locale.alias pt_BR.UTF-8"
+#    env_file:
+#      - "/dados/docker/environment/postgresql/tie-in.env"
+#    volumes:
+#      - "postgres-conf-d:/etc/postgresql/conf.d"
+#      # - "/dados/docker/environment/postgresql/conf.d/multiple-db.sh:/etc/postgresql/conf.d/multiple-db.sh"
+#      - "postgresql-data:/var/lib/postgresql/data/:rw"
+#      - "postgresql-logs:/var/lib/postgresql/logs/"
+#      - "/etc/localtime:/etc/localtime:ro"
+#    networks:
+#      - rede-chur
+#    ports:
+#      - "5432:5432"
 
 volumes:
-# CONFIGURACAO AMBIENTE
+  # CONFIGURACAO AMBIENTE
+  mysql-data:
+    driver: "local"
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "/dados/docker/persistent/mysql/data"
   mysql-conf-d:
-    driver: 'local'
+    driver: "local"
     driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: '/dados/docker/environment/mysql/conf.d'
+      type: "none"
+      o: "bind"
+      device: "/dados/docker/environment/mysql/conf.d"
   postgres-conf-d:
-    driver: 'local'
+    driver: "local"
     driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: '/dados/docker/environment/postgresql/conf.d'
+      type: "none"
+      o: "bind"
+      device: "/dados/docker/environment/postgresql/conf.d"
   certificate-ssl:
-    driver: 'local'
+    driver: "local"
     driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: '/dados/docker/environment/ssl'
+      type: "none"
+      o: "bind"
+      device: "/dados/docker/environment/ssl"
   nginx-reverse_sites-enabled:
-    driver: 'local'
+    driver: "local"
     driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: '/dados/docker/environment/nginx/sites-enabled'
+      type: "none"
+      o: "bind"
+      device: "/dados/docker/environment/nginx/sites-enabled"
   nginx-reverse_conf.d:
-    driver: 'local'
+    driver: "local"
     driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: '/dados/docker/environment/nginx/conf.d'
+      type: "none"
+      o: "bind"
+      device: "/dados/docker/environment/nginx/conf.d"
   # PERSISTENCIA DE DADOS
   php-sites:
-    driver: 'local'
+    driver: "local"
     driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: '/dados/docker/persistent/php/html'
-  mysql-data:
-    driver: 'local'
-    driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: '/dados/docker/persistent/mysql/data'
+      type: "none"
+      o: "bind"
+      device: "/dados/docker/persistent/php/html"
   postgresql-data:
-    driver: 'local'
+    driver: "local"
     driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: '/dados/docker/persistent/postgresql/data'
+      type: "none"
+      o: "bind"
+      device: "/dados/docker/persistent/postgresql/data"
   postgresql-logs:
-    driver: 'local'
+    driver: "local"
     driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: '/dados/docker/persistent/postgresql/logs'       
+      type: "none"
+      o: "bind"
+      device: "/dados/docker/persistent/postgresql/logs"
   nginx-reverse_root:
-    driver: 'local'
+    driver: "local"
     driver_opts:
-      type: 'none'
-      o: 'bind'
+      type: "none"
+      o: "bind"
       device: "/dados/docker/persistent/nginx/root"
-  nginx-reverse_NGINX_cache:
-    driver: 'local'
+  nginx-reverse_nginx_cache:
+    driver: "local"
     driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: '/dados/docker/persistent/nginx/NGINX_cache'
+      type: "none"
+      o: "bind"
+      device: "/dados/docker/persistent/nginx/nginx_cache"
   nginx-reverse_logs:
-    driver: 'local'
+    driver: "local"
     driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: '/dados/docker/persistent/nginx/logs'      
+      type: "none"
+      o: "bind"
+      device: "/dados/docker/persistent/nginx/logs"
 
   docker-public:
-    driver: 'local'
+    driver: "local"
     driver_opts:
-      type: 'none'
-      o: 'bind'
+      type: "none"
+      o: "bind"
       device: /var/docker/public
-    
+
 networks:
   rede-chur:
     driver: bridge

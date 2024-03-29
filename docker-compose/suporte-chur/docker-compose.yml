@@ -93,12 +93,13 @@ services:
       - "3306:3306"
     volumes:
       # Persistente
-      - "mysql-data:/var/lib/mysql"
+      - "/dados/docker/persistent/mysql/data:/var/lib/mysql"
       # Ambiente
-      - "mysql-conf-d:/etc/mysql/conf.d"
+      - "/dados/docker/environment/mysql/conf.d:/etc/mysql/conf.d"
       - "/dados/docker/environment/mysql/my.cnf:/etc/mysql/my.cnf"
       - "/etc/localtime:/etc/localtime:ro"
       #     - dbsocket:/var/run/mysqld/
+    
     env_file:
       - "/dados/docker/environment/mysql/tie-in.env"
 
@@ -128,18 +129,6 @@ services:
 
 volumes:
   # CONFIGURACAO AMBIENTE
-  mysql-data:
-    driver: "local"
-    driver_opts:
-      type: "none"
-      o: "bind"
-      device: "/dados/docker/persistent/mysql/data"
-  mysql-conf-d:
-    driver: "local"
-    driver_opts:
-      type: "none"
-      o: "bind"
-      device: "/dados/docker/environment/mysql/conf.d"
   postgres-conf-d:
     driver: "local"
     driver_opts:
@@ -207,7 +196,7 @@ volumes:
     driver_opts:
       type: "none"
       o: "bind"
-      device: /var/docker/public
+      device: "/var/docker/public"
 
 networks:
   rede-chur:

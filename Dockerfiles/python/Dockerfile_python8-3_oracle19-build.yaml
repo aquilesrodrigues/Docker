@@ -8,9 +8,15 @@
 FROM python:3.13.0b3
 LABEL maintainer="Aquiles Rodrigues"
 
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
 RUN apt-get update && apt-get upgrade -y
 
-RUN apt-get install -y libaio1 nano zip unzip cron wget git iputils-ping traceroute openssh-server
+RUN apt-get install -y libaio1 nano zip unzip cron wget git \
+    iputils-ping traceroute openssh-server gcc curl  \
+    default-libmysqlclient-dev
 
 WORKDIR /opt/oracle
 
@@ -31,3 +37,4 @@ RUN echo /opt/oracle/instantclient_19_8 > /etc/ld.so.conf.d/oracle-instantclient
 
 # Set the working directory to /app
 WORKDIR /app
+

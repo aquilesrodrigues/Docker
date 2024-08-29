@@ -1,0 +1,44 @@
+# Customização apartir do dockerfile que gerou uma imagem no portainer
+# a origem do dockerfile está em:
+# https://gitea.unimedrecife.com.br:3000/aquiles.silva/portainer-stack-python  
+# utilizando imagem origem python-oracle:3.7.9-build 
+# Nesta imagem já foi instalado o ORACLE, unzip, cron, wget, git
+# Name: voucher-python:1.0-build
+# ====================================================================
+
+FROM python_oracle19-8:3.13-build
+
+RUN apt update && apt install  openssh-server sudo -y
+
+RUN useradd -rm -d /home/aquiles -s /bin/bash -g root -G sudo,docker,python -u 1000 aquiles 
+
+# Configure SSH
+RUN mkdir /var/run/sshd
+# Defina a senha root para acesso SSH (altere 'your_password' para a senha desejada)
+RUN echo 'root:your_password' | chpasswd
+# Arquivo sshd_config para habilitar login com senha de root, o que significa:
+# permitir que o usuário "root" faça login usando uma senha em vez de depender de outros métodos de autenticação, como chaves SSH.
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+# modifica a configuração do Pluggable Authentication Module para o daemon SSH para evitar possíveis problemas com o systemd.
+RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+# Exponha a porta
+EXPOSE 22
+# Start SSH server
+CMD ["/usr/sbin/sshd", "-D"]
+
+# Baixar o projeto para dentro da imagem
+RUN git clone https://aquiles.silva:senha@gitea.unimedrecife.com.br:3000/aquiles.silva/voucher-fortigate-deploy.git /app
+
+#vai para o diretório principal
+WORKDIR /app
+
+#RUN /usr/local/bin/python3 -m pip install --upgrade pip
+RUN python3 -m pip install --upgrade pip
+
+
+#Instala as dependências do aplicativo
+RUN pip3 install -r requirements.txt
+
+
+# Entra na pasta do app (só é executado quando iniciamos o container)
+CMD ["python3", "run.py"]

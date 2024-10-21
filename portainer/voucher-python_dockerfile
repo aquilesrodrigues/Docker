@@ -3,10 +3,10 @@
 # 
 # utilizando imagem origem python-oracle:3.7.9-build 
 # Nesta imagem já foi instalado o ORACLE, unzip, cron, wget, git
-# Name: voucher-python:1.0-build
+# Name: voucher-python:1.1-build
 # ====================================================================
 
-FROM python_oracle19-8:3.13-build
+FROM python3_13_0b4-oracle19_3-build
 
 RUN git clone https://usuario:pass123@gitea.empresa.com.br:3000/aquiles.silva/voucher-fortigate-deploy.git /app
 

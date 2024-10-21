@@ -1,8 +1,8 @@
 # Customização do dockerfile para gerar uma imagem no portainer
 # Esta imagem atualizado do Python com o Oracle Instant cliente
-# será base para o próximo dockerfile com a aplicação
+# será base para o próximo dockerfile que chamará a aplicação
 # Nesta imagem já foi instalado o ORACLE, unzip, cron, wget, git
-# Nome:	python_oracle19-8:3.13-build
+# Atribuir Nome: python3_13_0b3-oracle19_8-build
 # ====================================================================
 
 FROM python:3.13.0b3

@@ -1,0 +1,38 @@
+# Utilizando sintax da versão 3:
+# Stacks utilizando a imagem  construída no portainer (python-oracle:3.7.9-build)
+#  
+# utilizando imagem build python-oracle:3.7.9-build 
+# Nesta imagem já foi instalado o ORACLE, unzip, cron, wget, git
+# Name: voucher_1-fortigate-python
+# ====================================================================
+version: "3"
+
+services:
+  ###################################
+  # Container voucher-temp-stack
+  ###################################
+  voucher-stack:
+    image: voucher-python:1.0-build
+    hostname: voucher_temp
+    container_name: voucher_temp-stack
+    restart: always
+    working_dir: "/app"
+    # ou este ou o próximo
+    entrypoint: python run.py
+    # ou este ou o próximo
+    command: python run.py
+    networks:
+      - rede-chur
+      
+    volumes:
+      # # PASTA LOCAL PARA O PROJETO
+      - "/app:/app"
+
+      # arquivo LOCALTIME
+      - "/etc/localtime:/etc/localtime:ro"
+
+networks:
+  rede-chur:
+    driver: bridge
+    ipam:
+      driver: default

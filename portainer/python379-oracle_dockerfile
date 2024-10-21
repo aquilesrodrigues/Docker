@@ -1,0 +1,29 @@
+# Customização do dockerfile para gerar uma imagem no portainer
+# Esta imagem atualizado do Python com o Oracle Instant cliente
+# será base para o próximo dockerfile com a aplicação
+# Nesta imagem já foi instalado o ORACLE, unzip, cron, wget, git
+# Nome:	python3-13_oracle19-3:3.13-build
+# ====================================================================
+
+FROM python:3.13.0b4-slim-bullseye
+LABEL maintainer="Aquiles Rodrigues"
+
+RUN apt-get update && apt-get upgrade -y
+
+RUN apt-get install -y libaio1 zip unzip cron wget git
+
+WORKDIR /opt/oracle
+
+RUN wget \ 
+    https://download.oracle.com/otn_software/linux/instantclient/193000/instantclient-basic-linux.x64-19.3.0.0.0dbru.zip && \
+    unzip instantclient-basic-linux.x64-19.3.0.0.0dbru.zip && \
+    rm -f instantclient-basic-linux.x64-19.3.0.0.0dbru.zip 
+
+RUN cd /opt/oracle/instantclient_19_3 && rm -f *jdbc* *occi* *mysql* *README *jar \
+    uidrvci genezi adrci
+
+RUN echo /opt/oracle/instantclient_19_3 > /etc/ld.so.conf.d/oracle-instantclient.conf && \
+    ldconfig
+
+# Set the working directory to /app
+WORKDIR /app
